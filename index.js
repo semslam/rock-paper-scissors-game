@@ -1,9 +1,4 @@
-const inquirer = require("inquirer");
+const RockPaperScissor =  require('./services/RockPaperScissor');
 
-inquirer.prompt([{
-    type:"list",
-    name:"userMove",
-    choices:["rock","paper","scissor"]
-}]).then(({userMove}) =>{
-    console.log(`The user chooses a move: ${userMove}`);
-})
+const consoleGame = new RockPaperScissor();
+consoleGame.startNewGame();
