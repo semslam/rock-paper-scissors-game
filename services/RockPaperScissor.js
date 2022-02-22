@@ -13,10 +13,22 @@ class RockPaperScissor{
             message: "Would you want to start a new game?"
         });
         if(!answer.newGame){
-            console.log("******* Game End ********");
+            console.log("******* Game End! ********");
             process.exit();
         }
-        console.log(`********* Let's get the game started **********`);
+        this.chooseOneGameOption();
+    }
+
+     chooseOneGameOption = async () =>{
+        let result = await this.prompt({
+            type: 'list',
+            name: 'gameOption',
+            message: "Please choose one.",
+            choices: [
+            {name:'Human vs Computer',value:"humanVsComputer"}
+            ]
+        });
+        console.log(result.gameOption);
     }
 }
 
