@@ -4,7 +4,7 @@
   "description": "A console-based rock-paper-scissors game is played by two players, one human and one computer.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node index.js"
   },
   "repository": {
     "type": "git",
@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/semslam/rock-paper-cissors-game/issues"
   },
-  "homepage": "https://github.com/semslam/rock-paper-cissors-game#readme"
+  "homepage": "https://github.com/semslam/rock-paper-cissors-game#readme",
+  "dependencies": {
+    "inquirer": "^8.2.0"
+  }
 }
