@@ -19,5 +19,8 @@
   "homepage": "https://github.com/semslam/rock-paper-cissors-game#readme",
   "dependencies": {
     "inquirer": "^8.2.0"
+  },
+  "devDependencies": {
+    "jest": "^27.5.1"
   }
 }
