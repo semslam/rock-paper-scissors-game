@@ -37,7 +37,14 @@ class RockPaperScissor{
         if (gameOption === "humanVsComputer"){
             playerName ='Xavas';
         }
-        console.log(`Yea I'm ${playerName} the best player so far!!, Who want to challenge me`);  
+        console.log(`Yea I'm ${playerName} the best player so far!!, Who want to challenge me`);
+        this.computerRandomMove();  
+    }
+
+    computerRandomMove(){
+        let res = this.gameMoves[Math.floor(Math.random() * this.gameMoves.length)];
+        console.log(res);
+
     }
 }
 
