@@ -28,7 +28,16 @@ class RockPaperScissor{
             {name:'Human vs Computer',value:"humanVsComputer"}
             ]
         });
-        console.log(result.gameOption);
+        this.gameProcess(result.gameOption)
+    }
+
+     gameProcess = async (gameOption) =>{
+        let playerName = '';
+        let playerMove = '';
+        if (gameOption === "humanVsComputer"){
+            playerName ='Xavas';
+        }
+        console.log(`Yea I'm ${playerName} the best player so far!!, Who want to challenge me`);  
     }
 }
 
