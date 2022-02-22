@@ -4,7 +4,8 @@
   "description": "A console-based rock-paper-scissors game is played by two players, one human and one computer.",
   "main": "index.js",
   "scripts": {
-    "test": "node index.js"
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
