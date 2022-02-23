@@ -34,17 +34,33 @@ class RockPaperScissor{
      gameProcess = async (gameOption) =>{
         let playerName = '';
         let playerMove = '';
+        let computerMove = this.computerMove()
         if (gameOption === "humanVsComputer"){
             playerName ='Xavas';
+            playerMove = await this.humanMove();
         }
+        // implement a method verified the winner
         console.log(`Yea I'm ${playerName} the best player so far!!, Who want to challenge me`);
-        this.computerRandomMove();  
+        console.log(`Computer move ${computerMove} *********** ${playerName} move ${playerMove}`); 
+    
     }
 
-    computerRandomMove(){
-        let res = this.gameMoves[Math.floor(Math.random() * this.gameMoves.length)];
-        console.log(res);
+    computerMove = () =>{
+        return this.gameMoves[Math.floor(Math.random() * this.gameMoves.length)];
+    }
 
+     humanMove = async ()=> {
+        let result = await this.prompt({
+            type: 'list',
+            name: 'move',
+            message: "Please choose your move.",
+            choices: [
+            { name: 'Rock', value: "rock" },
+            { name: 'Paper', value: "paper" },
+            { name: 'Scissors', value: "scissors" }
+            ]
+        });
+        return result.move;
     }
 }
 
