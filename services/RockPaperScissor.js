@@ -104,6 +104,9 @@ class RockPaperScissor{
             resolve(winner);
         }); 
     }
+    formatGameResult(gameResult, playerName, playerMove,computerMove){
+        console.log(`Winner: ${gameResult}. ${playerName}(${playerMove}) vs Computer(${computerMove})`);
+    }
 }
 
 module.exports = RockPaperScissor;
