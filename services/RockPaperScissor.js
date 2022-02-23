@@ -79,22 +79,23 @@ class RockPaperScissor{
 
     analyticalEngine(playerName, playerMove, computerMove){
         let winner = "";
-        if (playerMove === computerMove) 
-            winner = "tie game";
-
-         else if (playerMove === 'rock') 
-            winner = computerMove === 'paper'?  "computer" : playerName;
-
-         else if (playerMove === 'paper') 
-            winner = computerMove === 'scissors'? "computer": playerName
-
-         else if (playerMove === 'scissors') 
-            winner =  computerMove === 'rock'? "computer": playerName
-
-         else {
-            console.log("Wrong parameter pass");
-            process.exit();
-        }
+        switch(playerMove) {
+            case computerMove:
+                winner = "tie game";
+              break;
+            case 'rock':
+                winner = computerMove === 'paper'?  "computer" : playerName;
+              break;
+            case 'paper':
+                winner = computerMove === 'scissors'? "computer": playerName
+              break;
+              case 'scissors':
+                winner =  computerMove === 'rock'? "computer": playerName
+              break;
+            default:
+                console.log("Wrong parameter pass");
+                process.exit();
+          }
 
         return new Promise((resolve, reject) => {
             resolve(winner);
