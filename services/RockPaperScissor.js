@@ -13,10 +13,7 @@ class RockPaperScissor{
     constructor(){
         this.prompt = inquirer.createPromptModule();
         this.gameMoves = ["rock", "paper","scissors"];
-        this.maxGameTie = 50;
-        this.tieCount = 1;
-        this.humanScore= 0;
-        this.computerScore= 0;
+        this.maxGameTie = 50,this.tieCount = 1,this.humanScore= 0,this.computerScore= 0;
     }
 
      startNewGame = async () => {
@@ -58,8 +55,7 @@ class RockPaperScissor{
         }
         
         gameResult = await this.analyticalEngine(playerName, playerMove, computerMove);
-
-        // if the game is tie prompt the payer to play again; else print out the game result;
+        
         if(gameResult === "tied"){
             if(this.tieCount === this.maxGameTie){
                 console.log(`After ${this.tieCount} rounds of play, the game, sponsored by ${playerName} VS. Computer, is officially tied`);

@@ -1,7 +1,11 @@
 const RockPaperScissor = require("../services/RockPaperScissor.js");
 
 const testGame = new RockPaperScissor();
-
+global.console = {
+    log: jest.fn(),
+    info: jest.fn(),
+    error: jest.fn()
+  }
 
   describe('Test analytical engine method', () => {
     test('Xavas: scissors, computer: paper, The winner should be Xavas', () => {
@@ -32,6 +36,32 @@ const testGame = new RockPaperScissor();
     //     expect(["scissor", "bottle","bird"]).toContain(testGame.computerMove());
     // });
   })
+
+  describe('Test if formatGameResult method as expected console.log the result, ', () => {
+    test('The test one should pass', () => {
+        testGame.computerScore=0, testGame.humanScore =1;
+        testGame.formatGameResult('gameResult', 'playerName', 'playerMove','computerMove');
+        expect(global.console.log).toHaveBeenCalledWith(
+            'The winner is gameResult ** playerName:(playerMove) 1 VS 0 Computer:(computerMove) '
+        )
+    })
+
+    test('The test two should pass', () => {
+        testGame.computerScore=1, testGame.humanScore =0;
+        testGame.formatGameResult('gameResult', 'playerName', 'playerMove','computerMove');
+        expect(global.console.log).toHaveBeenCalledWith(
+            'The winner is gameResult ** playerName:(playerMove) 0 VS 1 Computer:(computerMove) '
+        )
+    })
+
+    // test('The test three should fail', () => {
+    //     testGame.computerScore=1, testGame.humanScore =1;
+    //     testGame.formatGameResult('gameResult', 'playerName', 'playerMove','computerMove');
+    //     expect(global.console.error).toHaveBeenCalledWith(
+    //         'The winner is gameResult ** playerName:(playerMove) 0 VS 1 Computer:(computerMove) '
+    //     )
+    // })
+})
   
   
 
