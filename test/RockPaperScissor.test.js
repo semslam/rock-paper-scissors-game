@@ -21,5 +21,17 @@ const testGame = new RockPaperScissor();
             expect(winner).toBe('computer');
         });
     });
-  })  
+  })
+
+
+  describe('Test computerMove method', () => {
+    test('return value within testGame.gameMoves', () => {
+        expect(testGame.gameMoves).toContain(testGame.computerMove());
+    });
+    // test('The test is meant to fail', () => {
+    //     expect(["scissor", "bottle","bird"]).toContain(testGame.computerMove());
+    // });
+  })
+  
+  
 

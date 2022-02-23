@@ -43,19 +43,22 @@ class RockPaperScissor{
      gameProcess = async (gameOption) =>{
         let playerName = '';
         let playerMove = '';
+        let gameResult = '';
         let computerMove = this.computerMove()
         if (gameOption === "humanVsComputer"){
             playerName ='Xavas';
             playerMove = await this.humanMove();
         }
-
         if(playerMove ==='') {
             console.log("Human move cannot be empty. Please choose your move.");
             playerMove =  await this.humanMove();
         }
-        // implement a method verified the winner
-        console.log(`Yea I'm ${playerName} the best player so far!!, Who want to challenge me`);
-        console.log(`Computer move ${computerMove} *********** ${playerName} move ${playerMove}`); 
+        
+        gameResult = await this.analyticalEngine(playerName, playerMove, computerMove);
+
+        // if the game is tie prompt the payer to play again; else print out the game result;
+
+        console.log(gameResult);
     
     }
 
@@ -77,7 +80,7 @@ class RockPaperScissor{
         return result.move;
     }
 
-    analyticalEngine(playerName, playerMove, computerMove){
+    analyticalEngine = (playerName, playerMove, computerMove)=>{
         let winner = "";
         switch(playerMove) {
             case computerMove:
