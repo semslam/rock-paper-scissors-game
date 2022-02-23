@@ -2,10 +2,10 @@
 const inquirer = require("inquirer")
 class RockPaperScissor{
 
-// * For each iteration of the game, a user can pick either paper, scissors, or rock as a choice.
-// * For each iteration of the game, the computer will choose a random option from the three choices to play against the user.
-// * For each iteration of the game, the user can visually see what they chose and what the computer chose.
-// * For each iteration of the game, the user will immediately know the outcome of their choice vs. the computer's choice.
+// * a user can pick either paper, scissors, or rock as a choice.
+// * the computer will choose a random option from the three choices to play against the user.
+// * the user can visually see what they chose and what the computer chose.
+// * the user will immediately know the outcome of their choice vs. the computer's choice.
 // * A user can see a score that is continuous beyond each iteration of the game.
 // * A user can see a console prompt to play again.
 
@@ -14,6 +14,7 @@ class RockPaperScissor{
         this.prompt = inquirer.createPromptModule();
         this.gameMoves = ["rock", "paper","scissors"];
         this.maxGameTie = 50,this.tieCount = 1,this.humanScore= 0,this.computerScore= 0;
+        this.playerName = '';
     }
 
      startNewGame = async () => {
@@ -30,23 +31,30 @@ class RockPaperScissor{
     }
 
      chooseOneGameOption = async () =>{
-        let result = await this.prompt({
+        let result = await this.prompt([{
             type: 'list',
             name: 'gameOption',
             message: "Please choose one.",
             choices: [
             {name:'Human vs Computer',value:"humanVsComputer"}
             ]
-        });
-        this.gameProcess(result.gameOption)
+        },{
+            type:'input',
+            message:'Enter a player name',
+            name:"playerName",
+            validate: (value) => { if(value){ return true} else {return 'You need to playerName to continue'}}
+        }]
+        );
+
+        this.gameProcess(result.gameOption,result.playerName)
     }
 
-     gameProcess = async (gameOption) =>{
-        let playerName = '', playerMove = '', gameResult = '';
+     gameProcess = async (gameOption, playerName) =>{
+        let playerMove = '', gameResult = '';
         this.computerScore=0, this.humanScore =0;
         let computerMove = this.computerMove();
         if (gameOption === "humanVsComputer"){
-            playerName ='Xavas';
+            this.playerName = playerName;
             playerMove = await this.humanMove();
         }
         if(playerMove ==='') {
@@ -54,8 +62,8 @@ class RockPaperScissor{
             playerMove =  await this.humanMove();
         }
         
-        gameResult = await this.analyticalEngine(playerName, playerMove, computerMove);
-        
+        gameResult = await this.analyticalEngine(this.playerName, playerMove, computerMove);
+
         if(gameResult === "tied"){
             if(this.tieCount === this.maxGameTie){
                 console.log(`After ${this.tieCount} rounds of play, the game, sponsored by ${playerName} VS. Computer, is officially tied`);
