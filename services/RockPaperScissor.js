@@ -13,6 +13,10 @@ class RockPaperScissor{
     constructor(){
         this.prompt = inquirer.createPromptModule();
         this.gameMoves = ["rock", "paper","scissors"];
+        this.maxGameTie = 50;
+        this.tieCount = 1;
+        this.humanScore= 0;
+        this.computerScore= 0;
     }
 
      startNewGame = async () => {
@@ -41,10 +45,9 @@ class RockPaperScissor{
     }
 
      gameProcess = async (gameOption) =>{
-        let playerName = '';
-        let playerMove = '';
-        let gameResult = '';
-        let computerMove = this.computerMove()
+        let playerName = '', playerMove = '', gameResult = '';
+        this.computerScore=0, this.humanScore =0;
+        let computerMove = this.computerMove();
         if (gameOption === "humanVsComputer"){
             playerName ='Xavas';
             playerMove = await this.humanMove();
@@ -57,9 +60,20 @@ class RockPaperScissor{
         gameResult = await this.analyticalEngine(playerName, playerMove, computerMove);
 
         // if the game is tie prompt the payer to play again; else print out the game result;
-
-        console.log(gameResult);
-    
+        if(gameResult === "tied"){
+            if(this.tieCount === this.maxGameTie){
+                console.log(`After ${this.tieCount} rounds of play, the game, sponsored by ${playerName} VS. Computer, is officially tied`);
+                process.exit();
+            }
+            console.log(`The game is tied after ${this.tieCount} round(s). Continue playing the game`);
+            this.tieCount++;
+            this.gameProcess(gameOption)
+        }else{
+            gameResult === "computer"? this.computerScore++ : this.humanScore++;
+            this.formatGameResult(gameResult, playerName, playerMove,computerMove);
+            this.startNewGame();
+        }
+       
     }
 
     computerMove = () =>{
@@ -84,7 +98,7 @@ class RockPaperScissor{
         let winner = "";
         switch(playerMove) {
             case computerMove:
-                winner = "tie game";
+                winner = "tied";
               break;
             case 'rock':
                 winner = computerMove === 'paper'?  "computer" : playerName;
@@ -99,13 +113,14 @@ class RockPaperScissor{
                 console.log("Wrong parameter pass");
                 process.exit();
           }
-
+          
+          
         return new Promise((resolve, reject) => {
             resolve(winner);
         }); 
     }
-    formatGameResult(gameResult, playerName, playerMove,computerMove){
-        console.log(`Winner: ${gameResult}. ${playerName}(${playerMove}) vs Computer(${computerMove})`);
+    formatGameResult = (gameResult, playerName, playerMove,computerMove)=>{
+        console.log(`The winner is ${gameResult} ** ${playerName}:(${playerMove}) ${this.humanScore} VS ${this.computerScore} Computer:(${computerMove}) `);
     }
 }
 

@@ -12,7 +12,7 @@ const testGame = new RockPaperScissor();
 
     test('Xavas: rock, computer: rock, The game should be a tie', () => {
         return testGame.analyticalEngine("Xavas", "rock", "rock").then(winner => {
-            expect(winner).toBe('tie');
+            expect(winner).toBe('tied');
         });
     });
 
