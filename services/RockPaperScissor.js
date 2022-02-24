@@ -13,7 +13,7 @@ class RockPaperScissor{
     constructor(){
         this.prompt = inquirer.createPromptModule();
         this.gameMoves = ["rock", "paper","scissors"];
-        this.maxGameTie = 50,this.tieCount = 1,this.playerScore= 0,this.computerScore= 0,this.gameRound = 0;
+        this.maxGameTie = 5,this.tieCount = 1,this.playerScore= 0,this.computerScore= 0,this.gameRound = 0;
         this.playerName = '';
     }
     /**
@@ -80,7 +80,6 @@ class RockPaperScissor{
      */
      gameProcess = async (gameOption, playerName) =>{
         let playerMove = '', gameResult = '';
-        //this.computerScore=0, this.playerScore =0;
         let computerMove = this.computerMove();
         if (gameOption === "humanVsComputer"){
             this.playerName = playerName;
@@ -89,26 +88,12 @@ class RockPaperScissor{
             playerMove = this.computerMove();
             this.playerName = playerName;
         } 
-        // if(playerMove ==='') {
-        //     console.log("Human move cannot be empty. Please choose your move.");
-        //     playerMove =  await this.humanMove();
-        // }
-        
+
         gameResult = await this.analyticalEngine(this.playerName, playerMove, computerMove);
 
         if(gameResult === "tied"){
             if(this.tieCount === this.maxGameTie){
-                if( this.computerScore > this.playerScore){
-                    this.formatGameResult(gameResult, playerName, playerMove,computerMove);
-                    this.computerScore = 0, this.playerScore = 0, this.tieCount = 1;
-                    this.startNewGame();
-                }else if(this.playerScore > this.computerScore){
-                    this.formatGameResult(gameResult, playerName, playerMove,computerMove);
-                    this.computerScore = 0, this.playerScore = 0, this.tieCount = 1;
-                    this.startNewGame();
-                }
-                console.log(`After ${this.tieCount} rounds of play, the game, sponsored by ${playerName} VS. Computer, is officially tied`);
-                process.exit();
+                this.firstPlayerToWinTwice(gameResult, playerName, playerMove,computerMove)
             }
             console.log(`The game is tied after ${this.tieCount} round(s). Continue playing the game`);
             this.tieCount++;
@@ -118,22 +103,32 @@ class RockPaperScissor{
             if(this.gameRound > 1){
                 if(this.computerScore === 2 || this.playerScore === 2){
                     this.formatGameResult(gameResult, playerName, playerMove,computerMove);
-                    this.computerScore = 0, this.playerScore = 0, this.tieCount = 1;
-                    this.startNewGame(); 
                 }else{
                     console.log(`Current score ${this.gameRound}** ${playerName}:(${playerMove}) ${this.playerScore} VS ${this.computerScore} Computer:(${computerMove}) `);
-                    this.gameRound--;
+                    this.gameRound--, this.tieCount = 1;
                     this.gameProcess(gameOption, playerName);
                 }
                 
             }else{
                 this.formatGameResult(gameResult, playerName, playerMove,computerMove);
-                this.computerScore = 0, this.playerScore = 0, this.tieCount = 1;
-                this.startNewGame();
             }
         }
        
     }
+
+    /**
+     * This announce first player to win twice,or print if the game is tied
+     * @param {String} gameResult 
+     * @param {String} playerName 
+     * @param {String} playerMove 
+     * @param {String} computerMove 
+     */
+    firstPlayerToWinTwice = (gameResult, playerName, playerMove,computerMove) =>{
+        this.computerScore > this.playerScore ? this.formatGameResult(gameResult, playerName, playerMove,computerMove) :
+        this.playerScore > this.computerScore ? this.formatGameResult(gameResult, playerName, playerMove,computerMove) :
+        console.log(`After ${this.tieCount} rounds of play, the game, sponsored by ${playerName} VS. Computer, is officially tied`); process.exit();
+    }
+
     /**
      * Computer choose a random option from the three choices
      * @returns {String} move
@@ -198,8 +193,10 @@ class RockPaperScissor{
      * @param {String} playerMove 
      * @param {String} computerMove 
      */
-    formatGameResult = (gameResult, playerName, playerMove,computerMove)=>{
+     formatGameResult = (gameResult, playerName, playerMove,computerMove)=>{
         console.log(`The winner is ${gameResult} ** ${playerName}:(${playerMove}) ${this.playerScore} VS ${this.computerScore} Computer:(${computerMove}) `);
+        this.computerScore = 0, this.playerScore = 0, this.tieCount = 1;
+        this.startNewGame();
     }
 }
 
