@@ -18,7 +18,8 @@ npm run test
 # Game guide
 1. When the game begins, you will be prompted to begin a new game. Y -> continue,  n or any other key press -> exit the game.
 2. If you opt to proceed, you will be asked to select a game mode: Human vs Computer or Computer vs Computer
-3. Next, the console prompts the user to input the player's name.
+3. If you opt to proceed, you will be asked to select a game round: Play only once or Play three times
+4. Next, the console prompts the user to input the player's name.
 
 
 #### Human vs Computer
