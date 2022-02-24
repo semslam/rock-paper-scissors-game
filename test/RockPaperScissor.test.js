@@ -8,23 +8,45 @@ global.console = {
   }
 
   describe('Test analytical engine method', () => {
-    test('Xavas: scissors, computer: paper, The winner should be Xavas', () => {
-        return testGame.analyticalEngine("Xavas", "scissors", "paper").then(winner => {
-            expect(winner).toBe('Xavas');
+    test('Xavier: scissors, computer: paper, The winner should be Xavier', () => {
+        return testGame.analyticalEngine("Xavier", "scissors", "paper").then(winner => {
+            expect(winner).toBe('Xavier');
         });
     });
 
-    test('Xavas: rock, computer: rock, The game should be a tie', () => {
-        return testGame.analyticalEngine("Xavas", "rock", "rock").then(winner => {
+    test('Xavier: rock, computer: rock, The game should be a tie', () => {
+        return testGame.analyticalEngine("Xavier", "rock", "rock").then(winner => {
             expect(winner).toBe('tied');
         });
     });
 
-    test('Xavas: scissors, computer: rock, The winner should be a computer', () => {
-        return testGame.analyticalEngine("Xavas", "scissors", "rock").then(winner => {
+    test('Xavier: scissors, computer: rock, The winner should be a computer', () => {
+        return testGame.analyticalEngine("Xavier", "scissors", "rock").then(winner => {
             expect(winner).toBe('computer');
         });
     });
+
+    test('Robot: paper, computer: rock, The winner should be a Robot', () => {
+        return testGame.analyticalEngine("Robot", "paper", "rock").then(winner => {
+            expect(winner).toBe('Robot');
+        });
+    });
+
+    test('Robot: scissors, computer: rock, The winner should be a computer', () => {
+        return testGame.analyticalEngine("Robot", "scissors", "rock").then(winner => {
+            expect(winner).toBe('computer');
+        });
+    });
+    test('Robot: scissors, computer: scissors, The winner should be a computer', () => {
+        return testGame.analyticalEngine("Robot", "scissors", "scissors").then(winner => {
+            expect(winner).toBe('tied');
+        });
+    });
+    // test('Robot: bird, computer: rock, Expecting the process to fail', () => {
+    //     return testGame.analyticalEngine("Robot", "bird", "rock").then(winner => {
+    //         expect(winner).toBe('computer');
+    //     });
+    // });
   })
 
 
@@ -39,7 +61,7 @@ global.console = {
 
   describe('Test if formatGameResult method as expected console.log the result, ', () => {
     test('The test one should pass', () => {
-        testGame.computerScore=0, testGame.humanScore =1;
+        testGame.computerScore=0, testGame.playerScore =1;
         testGame.formatGameResult('gameResult', 'playerName', 'playerMove','computerMove');
         expect(global.console.log).toHaveBeenCalledWith(
             'The winner is gameResult ** playerName:(playerMove) 1 VS 0 Computer:(computerMove) '
@@ -47,7 +69,7 @@ global.console = {
     })
 
     test('The test two should pass', () => {
-        testGame.computerScore=1, testGame.humanScore =0;
+        testGame.computerScore=1, testGame.playerScore =0;
         testGame.formatGameResult('gameResult', 'playerName', 'playerMove','computerMove');
         expect(global.console.log).toHaveBeenCalledWith(
             'The winner is gameResult ** playerName:(playerMove) 0 VS 1 Computer:(computerMove) '
@@ -55,7 +77,7 @@ global.console = {
     })
 
     // test('The test three should fail', () => {
-    //     testGame.computerScore=1, testGame.humanScore =1;
+    //     testGame.computerScore=1, testGame.playerScore =1;
     //     testGame.formatGameResult('gameResult', 'playerName', 'playerMove','computerMove');
     //     expect(global.console.error).toHaveBeenCalledWith(
     //         'The winner is gameResult ** playerName:(playerMove) 0 VS 1 Computer:(computerMove) '

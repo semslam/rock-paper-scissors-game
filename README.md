@@ -1,5 +1,5 @@
 # rock-paper-cissors-game
-A console-based rock-paper-scissors game is played by two players, one human and one computer.
+A console-based rock-paper-scissors game is played by two players, one human and one computer and computer to computer
 
 # Instructions
 1. Open your console and navigate to the rock-paper-scissors-game folder. Run this command before you start the game. 
@@ -17,7 +17,7 @@ npm run test
 
 # Game guide
 1. When the game begins, you will be prompted to begin a new game. Y -> continue,  n or any other key press -> exit the game.
-2. If you opt to proceed, you will be asked to select a game mode: Player vs Computer.
+2. If you opt to proceed, you will be asked to select a game mode: Human vs Computer or Computer vs Computer
 3. Next, the console prompts the user to input the player's name.
 
 
