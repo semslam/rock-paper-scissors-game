@@ -16,7 +16,9 @@ class RockPaperScissor{
         this.maxGameTie = 50,this.tieCount = 1,this.humanScore= 0,this.computerScore= 0;
         this.playerName = '';
     }
-
+    /**
+     * Prompt the a player to start game or end the game
+     */
      startNewGame = async () => {
         let answer = await this.prompt({
             type: 'confirm',
@@ -24,17 +26,21 @@ class RockPaperScissor{
             message: "Would you want to start a new game?"
         });
         if(!answer.newGame){
-            console.log("******* Game End! ********");
+            console.log("******* GAME END! ********");
             process.exit();
         }
         this.chooseOneGameOption();
     }
 
+    /**
+     * Prompt the player to select a game mode: Player vs Computer.
+     * and also prompts the user to input the player's name
+     */
      chooseOneGameOption = async () =>{
         let result = await this.prompt([{
             type: 'list',
             name: 'gameOption',
-            message: "Please choose one.",
+            message: "Please choose one",
             choices: [
             {name:'Human vs Computer',value:"humanVsComputer"}
             ]
@@ -42,13 +48,19 @@ class RockPaperScissor{
             type:'input',
             message:'Enter a player name',
             name:"playerName",
-            validate: (value) => { if(value){ return true} else {return 'You need a playerName to continue'}}
+            validate: (value) => { if(value){ return true} else {return 'You need a player name to continue'}}
         }]
         );
 
         this.gameProcess(result.gameOption,result.playerName)
     }
 
+    /**
+     * The method procedure allows the players to move, 
+     * it permits replay if the game is tied, and it may be played once, three times, or 50 times in a tie.
+     * @param {String} gameOption 
+     * @param {String} playerName 
+     */
      gameProcess = async (gameOption, playerName) =>{
         let playerMove = '', gameResult = '';
         this.computerScore=0, this.humanScore =0;
@@ -83,7 +95,10 @@ class RockPaperScissor{
     computerMove = () =>{
         return this.gameMoves[Math.floor(Math.random() * this.gameMoves.length)];
     }
-
+    /**
+     * Prompt the player pick either paper, scissors, or rock as a choice.
+     * @returns {String} move
+     */
      humanMove = async ()=> {
         let result = await this.prompt({
             type: 'list',
@@ -98,6 +113,13 @@ class RockPaperScissor{
         return result.move;
     }
 
+    /**
+     * Determine the winner of the game, whether it is a tie between the two players or not.
+     * @param {String} playerName 
+     * @param {String} playerMove 
+     * @param {String} computerMove 
+     * @returns {String} winner
+     */
     analyticalEngine = (playerName, playerMove, computerMove)=>{
         let winner = "";
         switch(playerMove) {
@@ -110,7 +132,7 @@ class RockPaperScissor{
             case 'paper':
                 winner = computerMove === 'scissors'? "computer": playerName
               break;
-              case 'scissors':
+            case 'scissors':
                 winner =  computerMove === 'rock'? "computer": playerName
               break;
             default:
@@ -123,6 +145,13 @@ class RockPaperScissor{
             resolve(winner);
         }); 
     }
+    /**
+     * Print the final score of the game.
+     * @param {String} gameResult 
+     * @param {String} playerName 
+     * @param {String} playerMove 
+     * @param {String} computerMove 
+     */
     formatGameResult = (gameResult, playerName, playerMove,computerMove)=>{
         console.log(`The winner is ${gameResult} ** ${playerName}:(${playerMove}) ${this.humanScore} VS ${this.computerScore} Computer:(${computerMove}) `);
     }
