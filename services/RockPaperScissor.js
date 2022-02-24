@@ -1,7 +1,12 @@
+import chalk from 'chalk';
+import inquirer from 'inquirer';
+import gradient from 'gradient-string';
+import chalkAnimation from 'chalk-animation';
+import figlet from 'figlet';
+import { createSpinner } from 'nanospinner';
 
-import inquirer from "inquirer";
-
-
+const log = console.log;
+const clear = console.clear;
 
 class RockPaperScissor{
 
@@ -19,18 +24,45 @@ class RockPaperScissor{
         this.maxGameTie = 5,this.tieCount = 1,this.playerScore= 0,this.computerScore= 0,this.gameRound = 0;
         this.playerName = '';
     }
+
+    
+
+      welcome = async () => {
+        clear();
+        const sleep = (ms = 2000) => new Promise((r) => setTimeout(r, ms));
+        const rainbowTitle = chalkAnimation.rainbow(
+          'Welcome to a classic game rock , paper, scissors \n'
+        );
+      
+        await sleep();
+        rainbowTitle.stop();
+      
+        log(`
+          ${chalk.bgBlue('HOW TO PLAY')}
+
+          1. Press Y -> continue,  n or any other key press -> ${chalk.bgRed('exit the game')}.
+          2. Choose a game mode: Human vs Computer or Computer vs Computer
+          3. Choose a game round: Play only once or Play three times
+          4. Next, input the player's name.
+          5. On three times play, the first player to win twice is declared the winner
+          6. A tie with 50 rounds is a tie for life.
+          
+          ${chalk.green('CONTINUE THE GAME PROCESS')} 
+        `);
+        this.startNewGame();
+      }
+
     /**
      * Prompt the a player to start game or end the game
      */
      startNewGame = async () => {
-        
         let answer = await this.prompt({
             type: 'confirm',
             name: 'newGame',
             message: "Would you want to start a new game?"
         });
         if(!answer.newGame){
-            console.log("******* GAME END! ********");
+            log(`${chalk.red('******* GAME END! ********')}`);
             process.exit();
         }
         this.chooseOneGameOption();
