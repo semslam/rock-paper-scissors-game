@@ -13,7 +13,7 @@ class RockPaperScissor{
     constructor(){
         this.prompt = inquirer.createPromptModule();
         this.gameMoves = ["rock", "paper","scissors"];
-        this.maxGameTie = 50,this.tieCount = 1,this.playerScore= 0,this.computerScore= 0;
+        this.maxGameTie = 50,this.tieCount = 1,this.playerScore= 0,this.computerScore= 0,this.gameRound = 0;
         this.playerName = '';
     }
     /**
@@ -38,7 +38,7 @@ class RockPaperScissor{
      */
      chooseOneGameOption = async () =>{
         let playerType = '';
-        let chooseGameMode = await this.prompt({
+        let chooseGameMode = await this.prompt([{
             type: 'list',
             name: 'gameOption',
             message: "Please choose one",
@@ -46,7 +46,16 @@ class RockPaperScissor{
             {name:'Human vs Computer',value:"humanVsComputer"},
             {name: 'Computer vs Computer', value:"computerVsComputer"}
             ]
-        });
+        },{
+            type: 'list',
+            name: 'gameRound',
+            message: "Please choose your game round",
+            choices: [
+            {name:'Play only once',value:1},
+            {name: 'Play three times', value:3}
+            ]
+        }
+    ]);
         if(chooseGameMode.gameOption === "humanVsComputer"){
             let humanPlayer = await this.prompt({
                 type:'input',
@@ -58,7 +67,8 @@ class RockPaperScissor{
             playerType = humanPlayer.playerName;
         }else playerType = "Robot"
         
-
+        this.gameRound = chooseGameMode.gameRound;
+       
         this.gameProcess(chooseGameMode.gameOption,playerType)
     }
 
@@ -70,8 +80,8 @@ class RockPaperScissor{
      */
      gameProcess = async (gameOption, playerName) =>{
         let playerMove = '', gameResult = '';
-        this.computerScore=0, this.playerScore =0;
-        let computerMove =  this.computerMove();
+        //this.computerScore=0, this.playerScore =0;
+        let computerMove = this.computerMove();
         if (gameOption === "humanVsComputer"){
             this.playerName = playerName;
             playerMove = await this.humanMove();
@@ -88,6 +98,15 @@ class RockPaperScissor{
 
         if(gameResult === "tied"){
             if(this.tieCount === this.maxGameTie){
+                if( this.computerScore > this.playerScore){
+                    this.formatGameResult(gameResult, playerName, playerMove,computerMove);
+                    this.computerScore = 0, this.playerScore = 0, this.tieCount = 1;
+                    this.startNewGame();
+                }else if(this.playerScore > this.computerScore){
+                    this.formatGameResult(gameResult, playerName, playerMove,computerMove);
+                    this.computerScore = 0, this.playerScore = 0, this.tieCount = 1;
+                    this.startNewGame();
+                }
                 console.log(`After ${this.tieCount} rounds of play, the game, sponsored by ${playerName} VS. Computer, is officially tied`);
                 process.exit();
             }
@@ -96,8 +115,22 @@ class RockPaperScissor{
             this.gameProcess(gameOption, playerName)
         }else{
             gameResult === "computer"? this.computerScore++ : this.playerScore++;
-            this.formatGameResult(gameResult, playerName, playerMove,computerMove);
-            this.startNewGame();
+            if(this.gameRound > 1){
+                if(this.computerScore === 2 || this.playerScore === 2){
+                    this.formatGameResult(gameResult, playerName, playerMove,computerMove);
+                    this.computerScore = 0, this.playerScore = 0, this.tieCount = 1;
+                    this.startNewGame(); 
+                }else{
+                    console.log(`Current score ${this.gameRound}** ${playerName}:(${playerMove}) ${this.playerScore} VS ${this.computerScore} Computer:(${computerMove}) `);
+                    this.gameRound--;
+                    this.gameProcess(gameOption, playerName);
+                }
+                
+            }else{
+                this.formatGameResult(gameResult, playerName, playerMove,computerMove);
+                this.computerScore = 0, this.playerScore = 0, this.tieCount = 1;
+                this.startNewGame();
+            }
         }
        
     }
