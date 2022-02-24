@@ -52,7 +52,7 @@ class RockPaperScissor{
      gameProcess = async (gameOption, playerName) =>{
         let playerMove = '', gameResult = '';
         this.computerScore=0, this.humanScore =0;
-        let computerMove = this.computerMove();
+        let computerMove =  this.computerMove();
         if (gameOption === "humanVsComputer"){
             this.playerName = playerName;
             playerMove = await this.humanMove();
@@ -71,7 +71,7 @@ class RockPaperScissor{
             }
             console.log(`The game is tied after ${this.tieCount} round(s). Continue playing the game`);
             this.tieCount++;
-            this.gameProcess(gameOption)
+            this.gameProcess(gameOption, playerName)
         }else{
             gameResult === "computer"? this.computerScore++ : this.humanScore++;
             this.formatGameResult(gameResult, playerName, playerMove,computerMove);
