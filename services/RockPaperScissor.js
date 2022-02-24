@@ -42,7 +42,7 @@ class RockPaperScissor{
             type:'input',
             message:'Enter a player name',
             name:"playerName",
-            validate: (value) => { if(value){ return true} else {return 'You need to playerName to continue'}}
+            validate: (value) => { if(value){ return true} else {return 'You need a playerName to continue'}}
         }]
         );
 

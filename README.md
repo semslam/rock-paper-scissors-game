@@ -24,5 +24,5 @@ npm run test
 #### Human vs Computer
 The system prompts the user to choose his move from either paper, scissors, or rock as a choice.
 
-After you've made your move, you'll see the outcome and be prompted to restart the game.
+After you've made your move, you'll see the outcome and be prompted to restart the game. 
 When a game is tied, the system encourages the player to restart. A 50-round tie is officially a tie forever.
