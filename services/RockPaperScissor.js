@@ -1,5 +1,8 @@
 
-const inquirer = require("inquirer")
+import inquirer from "inquirer";
+
+
+
 class RockPaperScissor{
 
 // * a user can pick either paper, scissors, or rock as a choice.
@@ -20,6 +23,7 @@ class RockPaperScissor{
      * Prompt the a player to start game or end the game
      */
      startNewGame = async () => {
+        
         let answer = await this.prompt({
             type: 'confirm',
             name: 'newGame',
@@ -200,4 +204,4 @@ class RockPaperScissor{
     }
 }
 
-module.exports = RockPaperScissor;
+export default RockPaperScissor;
