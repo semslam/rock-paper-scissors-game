@@ -13,7 +13,7 @@ class RockPaperScissor{
     constructor(){
         this.prompt = inquirer.createPromptModule();
         this.gameMoves = ["rock", "paper","scissors"];
-        this.maxGameTie = 50,this.tieCount = 1,this.humanScore= 0,this.computerScore= 0;
+        this.maxGameTie = 50,this.tieCount = 1,this.playerScore= 0,this.computerScore= 0;
         this.playerName = '';
     }
     /**
@@ -33,26 +33,33 @@ class RockPaperScissor{
     }
 
     /**
-     * Prompt the player to select a game mode: Player vs Computer.
+     * Prompt the player to select a game mode: Human vs Computer or Computer vs Computer
      * and also prompts the user to input the player's name
      */
      chooseOneGameOption = async () =>{
-        let result = await this.prompt([{
+        let playerType = '';
+        let chooseGameMode = await this.prompt({
             type: 'list',
             name: 'gameOption',
             message: "Please choose one",
             choices: [
-            {name:'Human vs Computer',value:"humanVsComputer"}
+            {name:'Human vs Computer',value:"humanVsComputer"},
+            {name: 'Computer vs Computer', value:"computerVsComputer"}
             ]
-        },{
-            type:'input',
-            message:'Enter a player name',
-            name:"playerName",
-            validate: (value) => { if(value){ return true} else {return 'You need a player name to continue'}}
-        }]
-        );
+        });
+        if(chooseGameMode.gameOption === "humanVsComputer"){
+            let humanPlayer = await this.prompt({
+                type:'input',
+                message:'Enter a player name',
+                name:"playerName",
+                validate: (value) => { if(value){ return true} else {return 'You need a player name to continue'}}
+            }
+            );
+            playerType = humanPlayer.playerName;
+        }else playerType = "Robot"
+        
 
-        this.gameProcess(result.gameOption,result.playerName)
+        this.gameProcess(chooseGameMode.gameOption,playerType)
     }
 
     /**
@@ -63,16 +70,19 @@ class RockPaperScissor{
      */
      gameProcess = async (gameOption, playerName) =>{
         let playerMove = '', gameResult = '';
-        this.computerScore=0, this.humanScore =0;
+        this.computerScore=0, this.playerScore =0;
         let computerMove =  this.computerMove();
         if (gameOption === "humanVsComputer"){
             this.playerName = playerName;
             playerMove = await this.humanMove();
-        }
-        if(playerMove ==='') {
-            console.log("Human move cannot be empty. Please choose your move.");
-            playerMove =  await this.humanMove();
-        }
+        }else if (gameOption === "computerVsComputer") {
+            playerMove = this.computerMove();
+            this.playerName = playerName;
+        } 
+        // if(playerMove ==='') {
+        //     console.log("Human move cannot be empty. Please choose your move.");
+        //     playerMove =  await this.humanMove();
+        // }
         
         gameResult = await this.analyticalEngine(this.playerName, playerMove, computerMove);
 
@@ -85,13 +95,16 @@ class RockPaperScissor{
             this.tieCount++;
             this.gameProcess(gameOption, playerName)
         }else{
-            gameResult === "computer"? this.computerScore++ : this.humanScore++;
+            gameResult === "computer"? this.computerScore++ : this.playerScore++;
             this.formatGameResult(gameResult, playerName, playerMove,computerMove);
             this.startNewGame();
         }
        
     }
-
+    /**
+     * Computer choose a random option from the three choices
+     * @returns {String} move
+     */
     computerMove = () =>{
         return this.gameMoves[Math.floor(Math.random() * this.gameMoves.length)];
     }
@@ -153,7 +166,7 @@ class RockPaperScissor{
      * @param {String} computerMove 
      */
     formatGameResult = (gameResult, playerName, playerMove,computerMove)=>{
-        console.log(`The winner is ${gameResult} ** ${playerName}:(${playerMove}) ${this.humanScore} VS ${this.computerScore} Computer:(${computerMove}) `);
+        console.log(`The winner is ${gameResult} ** ${playerName}:(${playerMove}) ${this.playerScore} VS ${this.computerScore} Computer:(${computerMove}) `);
     }
 }
 
