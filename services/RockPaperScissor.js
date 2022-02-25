@@ -5,13 +5,15 @@ import chalkAnimation from 'chalk-animation';
 import figlet from 'figlet';
 import { createSpinner } from 'nanospinner';
 
-
+// print type list
 const [TEMP_TIED, PERM_TIED, CURR_SCORE, WINNER] = [
     'temporaryTied',
     'permanentTied',
     'currentScore',
     'winner'
 ]
+// repeated values
+const [ROCK,PAPER,SCISSORS,COMPUTER,TIED,HUMAN_VS_COMPUTER,COMPUTER_VS_COMPUTER] = ["rock", "paper","scissors","computer","tied","humanVsComputer","computerVsComputer"]
 
 class RockPaperScissor{
 
@@ -28,7 +30,7 @@ class RockPaperScissor{
     
     constructor(){
         this.prompt = inquirer.createPromptModule();
-        this.gameMoves = ["rock", "paper","scissors"];
+        this.gameMoves = [ROCK, PAPER,SCISSORS];
         this.maxGameTie = 5,this.tieCount = 1,this.playerScore= 0,this.computerScore= 0,this.gameRound = 0;
         this.playerName = '';
      
@@ -92,8 +94,8 @@ class RockPaperScissor{
             name: 'gameOption',
             message: "Please choose one",
             choices: [
-            {name:'Human vs Computer',value:"humanVsComputer"},
-            {name: 'Computer vs Computer', value:"computerVsComputer"}
+            {name:'Human vs Computer',value:HUMAN_VS_COMPUTER},
+            {name: 'Computer vs Computer', value:COMPUTER_VS_COMPUTER}
             ]
         },{
             type: 'list',
@@ -105,7 +107,7 @@ class RockPaperScissor{
             ]
         }
     ]);
-        if(chooseGameMode.gameOption === "humanVsComputer"){
+        if(chooseGameMode.gameOption === HUMAN_VS_COMPUTER){
             let humanPlayer = await this.prompt({
                 type:'input',
                 message:'Enter a player name',
@@ -130,23 +132,23 @@ class RockPaperScissor{
      gameProcess = async (gameOption, playerName) =>{
         let playerMove = '', gameResult = '';
         let computerMove = this.computerMove();
-        if (gameOption === "humanVsComputer"){
+        if (gameOption === HUMAN_VS_COMPUTER){
             this.playerName = playerName;
             playerMove = await this.humanMove();
-        }else if (gameOption === "computerVsComputer") {
+        }else if (gameOption === COMPUTER_VS_COMPUTER) {
             playerMove = this.computerMove();
             this.playerName = playerName;
         } 
 
         gameResult = await this.analyticalEngine(this.playerName, playerMove, computerMove);
         
-        if(gameResult === "tied"){
+        if(gameResult === TIED){ 
             if(this.tieCount === this.maxGameTie){
                 this.firstPlayerToWinTwice(gameResult, playerName, playerMove,computerMove)
             }
             this.printOutOptions(gameOption,playerName,computerMove,playerMove,TEMP_TIED);
         }else{
-            gameResult === "computer"? this.computerScore++ : this.playerScore++;
+            gameResult === COMPUTER? this.computerScore++ : this.playerScore++;
             if(this.gameRound > 1){
                 if(this.computerScore === 2 || this.playerScore === 2){
                     this.printOutOptions(gameOption,playerName,computerMove,playerMove,WINNER,gameResult)
@@ -162,12 +164,12 @@ class RockPaperScissor{
     }
 
     chooseEmoji =(emojiName)=>{
-        switch (emojiName) {
-            case 'rock':
+        switch (emojiName) { 
+            case ROCK:
                 return '🤜'
-            case 'paper':
+            case PAPER:
                 return '✋'
-            case 'scissors':
+            case SCISSORS:
                 return '✌'
             default:
                 console.log("Wrong parameter pass");
@@ -204,9 +206,9 @@ class RockPaperScissor{
             name: 'move',
             message: "Please choose your move.",
             choices: [
-            { name: 'Rock 🤜', value: "rock" },
-            { name: 'Paper ✋', value: "paper" },
-            { name: 'Scissors ✌️', value: "scissors" }
+            { name: 'Rock 🤜', value: ROCK },
+            { name: 'Paper ✋', value: PAPER },
+            { name: 'Scissors ✌️', value: SCISSORS }
             ]
         });
         return result.move;
@@ -223,16 +225,16 @@ class RockPaperScissor{
         let winner = "";
         switch(playerMove) {
             case computerMove:
-                winner = "tied";
+                winner = TIED;
               break;
-            case 'rock':
-                winner = computerMove === 'paper'?  "computer" : playerName;
+            case ROCK:
+                winner = computerMove === PAPER?  COMPUTER : playerName;
               break;
-            case 'paper':
-                winner = computerMove === 'scissors'? "computer": playerName
+            case PAPER:
+                winner = computerMove === SCISSORS? COMPUTER: playerName
               break;
-            case 'scissors':
-                winner =  computerMove === 'rock'? "computer": playerName
+            case SCISSORS:
+                winner =  computerMove === ROCK? COMPUTER: playerName
               break;
             default:
                 console.log("Wrong parameter pass");
@@ -273,7 +275,6 @@ class RockPaperScissor{
      * @param {String} computerMove 
      */
      formatGameResult = (gameResult, playerName, playerMove,computerMove, spinner)=>{
-        //  this.clear();
         figlet(`Congrats , ${gameResult} !\n \n You Are The Winner...`, (err, data) => {
             this.log(gradient.pastel.multiline(data) + '\n');
             spinner.success({ text: `The winner is ${gameResult} *🤝 😁 🤴 🥳 🥂 🕺 💃 🍾* (${playerName}):${gameResult === playerName ? '😁':'😞'} ${this.chooseEmoji(playerMove)}(${playerMove}) ${this.playerScore} VS ${this.computerScore} ${computerMove} ${this.chooseEmoji(computerMove)} ${gameResult === 'computer'? '😁':'😞' }:(Computer)`});
