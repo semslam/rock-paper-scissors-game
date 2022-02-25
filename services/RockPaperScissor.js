@@ -153,28 +153,16 @@ class RockPaperScissor{
                 this.firstPlayerToWinTwice(gameResult, playerName, playerMove,computerMove)
             }
             this.printOutOptions(gameOption,playerName,computerMove,playerMove,'temporaryTied');
-            // const spinner = createSpinner('Loading the result...').start();
-            // await this.sleep();
-            // spinner.error({ text: `The game is tied, (${playerName}):🙄 ${this.chooseEmoji(playerMove)}(${playerMove}) VS ${computerMove} ${this.chooseEmoji(computerMove)} 🙄:(Computer), tie count ${this.tieCount}. ${chalk.green('Continue playing the game')}` })
-            // this.tieCount++;
-            // this.gameProcess(gameOption, playerName)
         }else{
             gameResult === "computer"? this.computerScore++ : this.playerScore++;
             if(this.gameRound > 1){
                 if(this.computerScore === 2 || this.playerScore === 2){
-                    //this.formatGameResult(gameResult, playerName, playerMove,computerMove);
                     this.printOutOptions(gameOption,playerName,computerMove,playerMove,'winner',gameResult)
                 }else{
                     this.printOutOptions(gameOption,playerName,computerMove,playerMove,'currentScore',gameResult);
-                    // const spinner = createSpinner('Loading the result...').start();
-                    // await this.sleep();
-                    // spinner.success({ text: `Current score..., ** round ${4 - this.gameRound} ** (${playerName}):${gameResult === playerName ? '😁':'😞'} ${this.chooseEmoji(playerMove)}(${playerMove}) ${this.playerScore} VS ${this.computerScore} ${computerMove} ${this.chooseEmoji(computerMove)} ${gameResult === 'computer'? '😁':'😞' }:(Computer), ${chalk.green('Play again')}`});
-                    // this.gameRound--, this.tieCount = 1;
-                    // this.gameProcess(gameOption, playerName);
                 }
                 
             }else{
-                // this.formatGameResult(gameResult, playerName, playerMove,computerMove);
                 this.printOutOptions(gameOption,playerName,computerMove,playerMove,'winner',gameResult)
             }
         }
