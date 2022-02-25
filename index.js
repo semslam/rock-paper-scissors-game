@@ -3,4 +3,3 @@
 import RockPaperScissor from  './services/RockPaperScissor';
 const consoleGame = new RockPaperScissor();
 consoleGame.welcome();
-

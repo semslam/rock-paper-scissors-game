@@ -5,8 +5,9 @@ import chalkAnimation from 'chalk-animation';
 import figlet from 'figlet';
 import { createSpinner } from 'nanospinner';
 
-const log = console.log;
-const clear = console.clear;
+// const log = console.log;
+// const clear = console.clear;
+// const sleep = (ms = 2000) => new Promise((r) => setTimeout(r, ms));
 
 class RockPaperScissor{
 
@@ -18,26 +19,46 @@ class RockPaperScissor{
 // * A user can see a console prompt to play again.
 
 
+    // printOPtion = [
+    //     'temporaryTied',
+    //     'permanentTied',
+    //     'currentScore',
+    //     'winner'
+    // ]
+    // [TEMP_TIED, PERM_TIED, CURR_SCORE, WINNER] = printOPtion;
+
+    // {TEMP_TIED, PERM_TIED, CURR_SCORE, WINNER} = {
+    //     TEMP_TIED:'temporaryTied',
+    //     PERM_TIED:'permanentTied',
+    //     CURR_SCORE:'currentScore',
+    //     WINNER:'winner'
+    // }
+    
+    
     constructor(){
         this.prompt = inquirer.createPromptModule();
         this.gameMoves = ["rock", "paper","scissors"];
         this.maxGameTie = 5,this.tieCount = 1,this.playerScore= 0,this.computerScore= 0,this.gameRound = 0;
         this.playerName = '';
+        
     }
-
+    clear = console.clear;
+    log = console.log;
+    sleep = (ms = 2000) => new Promise((r) => setTimeout(r, ms));
+    
+    
     
 
       welcome = async () => {
-        clear();
-        const sleep = (ms = 2000) => new Promise((r) => setTimeout(r, ms));
+        this.clear();
         const rainbowTitle = chalkAnimation.rainbow(
           'Welcome to a classic game rock , paper, scissors \n'
         );
       
-        await sleep();
+        await this.sleep();
         rainbowTitle.stop();
       
-        log(`
+        this.log(`
           ${chalk.bgBlue('HOW TO PLAY')}
 
           1. Press Y -> continue,  n or any other key press -> ${chalk.bgRed('exit the game')}.
@@ -62,7 +83,7 @@ class RockPaperScissor{
             message: "Would you want to start a new game?"
         });
         if(!answer.newGame){
-            log(`${chalk.red('******* GAME END! ********')}`);
+            this.log(`${chalk.red('******* GAME END! ********')}`);
             process.exit();
         }
         this.chooseOneGameOption();
@@ -131,25 +152,46 @@ class RockPaperScissor{
             if(this.tieCount === this.maxGameTie){
                 this.firstPlayerToWinTwice(gameResult, playerName, playerMove,computerMove)
             }
-            console.log(`The game is tied after ${this.tieCount} round(s). Continue playing the game`);
-            this.tieCount++;
-            this.gameProcess(gameOption, playerName)
+            this.printOutOptions(gameOption,playerName,computerMove,playerMove,'temporaryTied');
+            // const spinner = createSpinner('Loading the result...').start();
+            // await this.sleep();
+            // spinner.error({ text: `The game is tied, (${playerName}):🙄 ${this.chooseEmoji(playerMove)}(${playerMove}) VS ${computerMove} ${this.chooseEmoji(computerMove)} 🙄:(Computer), tie count ${this.tieCount}. ${chalk.green('Continue playing the game')}` })
+            // this.tieCount++;
+            // this.gameProcess(gameOption, playerName)
         }else{
             gameResult === "computer"? this.computerScore++ : this.playerScore++;
             if(this.gameRound > 1){
                 if(this.computerScore === 2 || this.playerScore === 2){
-                    this.formatGameResult(gameResult, playerName, playerMove,computerMove);
+                    //this.formatGameResult(gameResult, playerName, playerMove,computerMove);
+                    this.printOutOptions(gameOption,playerName,computerMove,playerMove,'winner',gameResult)
                 }else{
-                    console.log(`Current score ${this.gameRound}** ${playerName}:(${playerMove}) ${this.playerScore} VS ${this.computerScore} Computer:(${computerMove}) `);
-                    this.gameRound--, this.tieCount = 1;
-                    this.gameProcess(gameOption, playerName);
+                    this.printOutOptions(gameOption,playerName,computerMove,playerMove,'currentScore',gameResult);
+                    // const spinner = createSpinner('Loading the result...').start();
+                    // await this.sleep();
+                    // spinner.success({ text: `Current score..., ** round ${4 - this.gameRound} ** (${playerName}):${gameResult === playerName ? '😁':'😞'} ${this.chooseEmoji(playerMove)}(${playerMove}) ${this.playerScore} VS ${this.computerScore} ${computerMove} ${this.chooseEmoji(computerMove)} ${gameResult === 'computer'? '😁':'😞' }:(Computer), ${chalk.green('Play again')}`});
+                    // this.gameRound--, this.tieCount = 1;
+                    // this.gameProcess(gameOption, playerName);
                 }
                 
             }else{
-                this.formatGameResult(gameResult, playerName, playerMove,computerMove);
+                // this.formatGameResult(gameResult, playerName, playerMove,computerMove);
+                this.printOutOptions(gameOption,playerName,computerMove,playerMove,'winner',gameResult)
             }
         }
        
+    }
+
+    chooseEmoji =(emojiName)=>{
+        switch (emojiName) {
+            case 'rock':
+                return '🤜'
+            case 'paper':
+                return '✋'
+            case 'scissors':
+                return '✌'
+            default:
+                break;
+        }
     }
 
     /**
@@ -160,9 +202,9 @@ class RockPaperScissor{
      * @param {String} computerMove 
      */
     firstPlayerToWinTwice = (gameResult, playerName, playerMove,computerMove) =>{
-        this.computerScore > this.playerScore ? this.formatGameResult(gameResult, playerName, playerMove,computerMove) :
-        this.playerScore > this.computerScore ? this.formatGameResult(gameResult, playerName, playerMove,computerMove) :
-        console.log(`After ${this.tieCount} rounds of play, the game, sponsored by ${playerName} VS. Computer, is officially tied`); process.exit();
+        this.computerScore > this.playerScore ? this.printOutOptions(gameOption,playerName,computerMove,playerMove,'winner',gameResult) :
+        this.playerScore > this.computerScore ? this.printOutOptions(gameOption,playerName,computerMove,playerMove,'winner',gameResult) :
+        this.printOutOptions(gameOption,playerName,computerMove,playerMove,'permanentTied')
     }
 
     /**
@@ -182,9 +224,9 @@ class RockPaperScissor{
             name: 'move',
             message: "Please choose your move.",
             choices: [
-            { name: 'Rock', value: "rock" },
-            { name: 'Paper', value: "paper" },
-            { name: 'Scissors', value: "scissors" }
+            { name: 'Rock 🤜', value: "rock" },
+            { name: 'Paper ✋', value: "paper" },
+            { name: 'Scissors ✌️', value: "scissors" }
             ]
         });
         return result.move;
@@ -222,6 +264,26 @@ class RockPaperScissor{
             resolve(winner);
         }); 
     }
+
+    printOutOptions = async (gameOption,playerName,computerMove,playerMove,printType,gameResult = '') =>{
+        const spinner = createSpinner('Loading the result...').start();
+        await this.sleep();
+        if(printType === 'temporaryTied'){
+            spinner.error({ text: `The game is tied, (${playerName}):🙄 ${this.chooseEmoji(playerMove)}(${playerMove}) VS (${computerMove}) ${this.chooseEmoji(computerMove)} 🙄:(Computer), tie count ${this.tieCount}. ${chalk.green('Continue playing the game')}` })
+            this.tieCount++;
+            this.gameProcess(gameOption, playerName)
+        }else if(printType === 'permanentTied'){
+            spinner.error({ text:`After ${this.tieCount} rounds of play, the game, sponsored by (${playerName})🙄  ${this.playerScore} VS ${this.computerScore} 🙄 (Computer), 🙅‍♂️ is officially tied`}); 
+            process.exit();
+        }else if(printType === 'currentScore'){
+                    spinner.success({ text: `Current score..., ** round ${4 - this.gameRound} ** (${playerName}):${gameResult === playerName ? '😁':'😞'} ${this.chooseEmoji(playerMove)}(${playerMove}) ${this.playerScore} VS ${this.computerScore} ${computerMove} ${this.chooseEmoji(computerMove)} ${gameResult === 'computer'? '😁':'😞' }:(Computer), ${chalk.green('Play again')}`});
+                    this.gameRound--, this.tieCount = 1;
+                    this.gameProcess(gameOption, playerName);
+        }else if(printType === 'winner'){
+            this.formatGameResult(gameResult, playerName, playerMove,computerMove,spinner)
+        }
+    }
+
     /**
      * Print the final score of the game.
      * @param {String} gameResult 
@@ -229,10 +291,15 @@ class RockPaperScissor{
      * @param {String} playerMove 
      * @param {String} computerMove 
      */
-     formatGameResult = (gameResult, playerName, playerMove,computerMove)=>{
-        console.log(`The winner is ${gameResult} ** ${playerName}:(${playerMove}) ${this.playerScore} VS ${this.computerScore} Computer:(${computerMove}) `);
-        this.computerScore = 0, this.playerScore = 0, this.tieCount = 1;
-        this.startNewGame();
+     formatGameResult = (gameResult, playerName, playerMove,computerMove, spinner)=>{
+         this.clear();
+        figlet(`Congrats , ${gameResult} !\n \n You Are The Winner...`, (err, data) => {
+            this.log(gradient.pastel.multiline(data) + '\n');
+            spinner.success({ text: `The winner is ${gameResult} *🤝 😁 🤴 🥳 🥂 🕺 💃 🍾* (${playerName}):${gameResult === playerName ? '😁':'😞'} ${this.chooseEmoji(playerMove)}(${playerMove}) ${this.playerScore} VS ${this.computerScore} ${computerMove} ${this.chooseEmoji(computerMove)} ${gameResult === 'computer'? '😁':'😞' }:(Computer)`});
+            this.computerScore = 0, this.playerScore = 0, this.tieCount = 1;
+            this.startNewGame();
+        });
+       
     }
 }
 
