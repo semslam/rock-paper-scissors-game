@@ -185,7 +185,7 @@ class RockPaperScissor {
       case PAPER:
         return "✋";
       case SCISSORS:
-        return "✌";
+        return "✌️";
       default:
         console.log("Wrong parameter pass");
     }
@@ -277,7 +277,7 @@ class RockPaperScissor {
    let pickEmojiExpression = (result, actor) =>{return result === actor ? "😁" : result === TIED?  "🙄":"😞"}
     return `(${playerName}):${
         pickEmojiExpression(gameResult,playerName)
-      } ${this.chooseEmojiMove(playerMove)}(${playerMove}) ${
+      }  ${this.chooseEmojiMove(playerMove)}(${playerMove}) ${
         this.playerScore
       } VS ${this.computerScore} ${computerMove} ${this.chooseEmojiMove(
         computerMove
