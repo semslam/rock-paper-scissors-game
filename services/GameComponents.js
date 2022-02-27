@@ -45,7 +45,7 @@ class GameComponents {
             winner = computerMove === ROCK ? COMPUTER : playerName;
             break;
         default:
-            console.log("Wrong parameter pass");
+            console.log(`Wrong parameter pass in analyticalEngine ${playerMove}`)
             process.exit();
         }
 

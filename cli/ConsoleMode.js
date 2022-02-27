@@ -22,7 +22,7 @@ class ConsoleMode{
     constructor(){
         // super();
         this.prompt = inquirer.createPromptModule();
-        this.rockPaperScissor = new RockPaperScissor("console")
+        // this.rockPaperScissor = new RockPaperScissor("console")
     }
     clear = console.clear;
     log = console.log;
@@ -54,7 +54,7 @@ class ConsoleMode{
             
             ${chalk.green("CONTINUE THE GAME PROCESS")} 
             `);
-        this.startNewGame();
+        // this.startNewGame();
     };
 
   /**
@@ -71,7 +71,7 @@ class ConsoleMode{
       process.exit();
     }
     if (isClean) this.clear();
-    this.chooseOneGameOption();
+//    return this.chooseOneGameOption();
   };
 
 
@@ -112,13 +112,13 @@ class ConsoleMode{
       playerType = humanPlayer.playerName;
     } else playerType = "Robot";
 
-    this.rockPaperScissor.gameRound = chooseGameMode.gameRound;
-    // return{
-    //     gameRound : chooseGameMode.gameRound,
-    //     playerType : playerType,
-    //     gameOption : chooseGameMode.gameOption
-    // }
-    this.rockPaperScissor.gameProcess(chooseGameMode.gameOption, playerType,  );
+    //this.rockPaperScissor.gameRound = chooseGameMode.gameRound;
+    return{
+        gameRound : chooseGameMode.gameRound,
+        playerType : playerType,
+        gameOption : chooseGameMode.gameOption
+    }
+    //this.rockPaperScissor.gameProcess(chooseGameMode.gameOption, playerType,  );
   };
 
   /**
