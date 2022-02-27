@@ -73,19 +73,26 @@ class RockPaperScissor{
 
 
 
-  /**
+  /** rename this function moveProduction
    * The method procedure allows the players to move,
    * it permits replay if the game is tied, and it may be played once, three times, or 50 times in a tie.
    * @param {String} gameOption
    * @param {String} playerName
    */
   gameProcess = async (gameOption, playerName,externalMove = '') => {
-    let playerMove = "", gameResult = "";
-    let actorMove = this.gameMode === "console"? await this.consoleMode.humanMove() : externalMove;
-    let computerMove = this.gameComponents.computerMove();
-    if (gameOption === HUMAN_VS_COMPUTER) { this.playerName = playerName; playerMove = actorMove; } 
-    else if (gameOption === COMPUTER_VS_COMPUTER) { playerMove = this.gameComponents.computerMove();this.playerName = playerName; }
 
+    
+      
+    let playerMove = "", gameResult = "";
+    let computerMove = this.gameComponents.computerMove();
+    if (gameOption === HUMAN_VS_COMPUTER) { 
+        this.playerName = playerName; 
+        playerMove = this.gameMode === "console"? await this.consoleMode.humanMove() : externalMove; 
+    }else if (gameOption === COMPUTER_VS_COMPUTER ) { 
+        playerMove = this.gameComponents.computerMove();
+        this.playerName = playerName; 
+    }
+   
     gameResult = await this.gameComponents.analyticalEngine(this.playerName,playerMove,computerMove);
 
     if (gameResult === TIED) {
@@ -211,6 +218,15 @@ class RockPaperScissor{
          this.consoleWelcome(true);
       }
     );
+    // winner((err, data) => {
+    //     this.log(gradient.pastel.multiline(data) + "\n");
+    //     spinner.success({
+    //       text: `The winner is ${gameResult} *🤝 😁 🤴 🥳 🥂 🕺 💃 🍾* ${this.commonTextDisplay(gameResult,playerName,playerMove,computerMove)}`,
+    //     });
+    //     this.computerScore = 0, this.playerScore = 0, this.tieCount = 1;
+    //      this.consoleWelcome(true);
+    //   })
+   
   };
 }
 
