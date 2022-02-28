@@ -15,7 +15,11 @@ const repeatedValues = [
     "computerVsComputer",
     ];
 
+const isConsoleOrApi = ["console","api","consoleAndApi"]    
+    
+
 export {
     printOutType,
-    repeatedValues
+    repeatedValues,
+    isConsoleOrApi
 }

@@ -7,6 +7,7 @@ import figlet from "figlet";
 import { createSpinner } from "nanospinner";
 import { repeatedValues} from "../libraries/sustainedValues";
 import RockPaperScissor from "../services/RockPaperScissor";
+import sleep from "../libraries/sleep";
 
 const [
     ROCK,
@@ -20,13 +21,10 @@ const [
 class ConsoleMode{
 
     constructor(){
-        // super();
         this.prompt = inquirer.createPromptModule();
-        // this.rockPaperScissor = new RockPaperScissor("console")
     }
     clear = console.clear;
     log = console.log;
-    sleep = (ms = 2000) => new Promise((r) => setTimeout(r, ms));
 
     /**
      * This display welcome and game guide message 
@@ -37,7 +35,7 @@ class ConsoleMode{
         "Welcome to a classic game rock , paper, scissors \n"
         );
 
-        await this.sleep();
+        await sleep();
         rainbowTitle.stop();
 
         this.log(`
@@ -54,7 +52,6 @@ class ConsoleMode{
             
             ${chalk.green("CONTINUE THE GAME PROCESS")} 
             `);
-        // this.startNewGame();
     };
 
   /**
@@ -71,14 +68,13 @@ class ConsoleMode{
       process.exit();
     }
     if (isClean) this.clear();
-//    return this.chooseOneGameOption();
   };
 
 
   /**
    * Prompt the player to select a game mode: Human vs Computer or Computer vs Computer
    * and also prompts the user to input the player's name
-   * @returns {Object} gameOption
+   * @returns {Object} gameOptions
    */
    chooseOneGameOption = async () => {
     let playerType = "";
@@ -112,13 +108,11 @@ class ConsoleMode{
       playerType = humanPlayer.playerName;
     } else playerType = "Robot";
 
-    //this.rockPaperScissor.gameRound = chooseGameMode.gameRound;
     return{
         gameRound : chooseGameMode.gameRound,
         playerType : playerType,
         gameOption : chooseGameMode.gameOption
     }
-    //this.rockPaperScissor.gameProcess(chooseGameMode.gameOption, playerType,  );
   };
 
   /**
@@ -140,7 +134,7 @@ class ConsoleMode{
   };
 
   /**
-   * Print the final score of the game.
+   * figlet the winner to the console.
    */
    congratsWinner = async (winnerName) => {
     figlet(

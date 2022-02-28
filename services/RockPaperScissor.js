@@ -1,12 +1,9 @@
-import chalk from "chalk";
-import inquirer from "inquirer";
-import gradient from "gradient-string";
-import chalkAnimation from "chalk-animation";
-import figlet from "figlet";
-import { createSpinner } from "nanospinner";
 import GameComponents from "./GameComponents";
 import ConsoleMode from "../cli/ConsoleMode";
 import printOutResult from "./PrintOutResult";
+import {printOutType, repeatedValues,isConsoleOrApi} from "../libraries/sustainedValues";
+import sleep from "../libraries/sleep";
+ 
 
 // print type list
 const [ 
@@ -14,12 +11,7 @@ TEMP_TIED,
 PERM_TIED, 
 CURR_SCORE, 
 WINNER 
-] = [
-"temporaryTied",
-"permanentTied",
-"currentScore",
-"winner",
-];
+] = printOutType;
 // repeated values
 const [
 ROCK,
@@ -29,16 +21,8 @@ COMPUTER,
 TIED,
 HUMAN_VS_COMPUTER,
 COMPUTER_VS_COMPUTER,
-] = [
-"rock",
-"paper",
-"scissors",
-"computer",
-"tied",
-"humanVsComputer",
-"computerVsComputer",
-];
-
+] = repeatedValues;
+const [CONSOLE,API, CONSOLE_AND_API] = isConsoleOrApi;
 class RockPaperScissor{
   // * a user can pick either paper, scissors, or rock as a choice.
   // * the computer will choose a random option from the three choices to play against the user.
@@ -49,18 +33,16 @@ class RockPaperScissor{
 
   constructor(gameMode) {
 
-    printOutResult.isConsoleOrApi = "console"
+    // printOutResult.isConsoleOrApi = "console"
     this.gameMode = gameMode;
     this.maxGameTie = 2,this.tieCount = 1,this.playerScore = 0,this.computerScore = 0,this.gameRound = 0;
     this.playerName = "";
     this.consoleMode = new ConsoleMode();
     this.gameComponents = new GameComponents();
-    // this.printOutResult = new PrintOutResult();
   }
   
   clear = console.clear;
   log = console.log;
-  sleep = (ms = 2000) => new Promise((r) => setTimeout(r, ms));
 
   consoleWelcome = async (startNewGame = false)  =>{
       if(!startNewGame){
@@ -69,30 +51,27 @@ class RockPaperScissor{
     await this.consoleMode.startNewGame(startNewGame);
     let res = await this.consoleMode.chooseOneGameOption();
    this.gameRound = res.gameRound;
-   this.gameProcess(res.gameOption, res.playerType);
+   this.predictMove(res.gameOption, res.playerType);
 
   }
 
 
 
-  /** rename this function moveProduction
-   * The method procedure allows the players to move,
-   * it permits replay if the game is tied, and it may be played once, three times, or 50 times in a tie.
+  /**
+   * Predict the moves of the two players.
    * @param {String} gameOption
    * @param {String} playerName
    */
-  gameProcess = async (gameOption, playerName,externalMove = '') => {
+  predictMove = async (gameOption, playerName,externalMove = '') => {
 
-    
-      
     let playerMove = "", gameResult = "";
-    let computerMove = 'rock'//this.gameComponents.computerMove();
+    let computerMove = this.gameComponents.computerMove();
     if (gameOption === HUMAN_VS_COMPUTER) { 
         this.playerName = playerName; 
-        playerMove = this.gameMode === "console"? await this.consoleMode.humanMove() : externalMove; 
+        playerMove = this.gameMode === CONSOLE? await this.consoleMode.humanMove() : externalMove; 
     }else if (gameOption === COMPUTER_VS_COMPUTER ) { 
-        playerMove = this.gameComponents.computerMove();
         this.playerName = playerName; 
+        playerMove = this.gameComponents.computerMove();
     }
    
     gameResult = await this.gameComponents.analyticalEngine(this.playerName,playerMove,computerMove);
@@ -113,7 +92,7 @@ class RockPaperScissor{
   };
 
   /**
-   * This announce first player to win twice,or print if the game is tied
+   * To get first player to win twice,or it the game is tied
    * @param {String} gameResult
    * @param {String} playerName
    * @param {String} playerMove
@@ -146,7 +125,7 @@ class RockPaperScissor{
         property.tieCount = this.tieCount;
         await printOutResult.temporaryTied(property)
         this.tieCount++;
-        this.gameProcess(gameOption, playerName);
+        this.predictMove(gameOption, playerName);
         break;
       case PERM_TIED:
         property.tieCount = this.tieCount;
@@ -157,7 +136,7 @@ class RockPaperScissor{
         property.gameRound = this.gameRound;
         await printOutResult.currentScore(property)
         this.gameRound--, this.tieCount = 1;
-        this.gameProcess(gameOption, playerName);
+        this.predictMove(gameOption, playerName);
         break;
       case WINNER:
         // await this.formatGameResult(property);
@@ -171,31 +150,14 @@ class RockPaperScissor{
     }
   };
 
+  /**
+   * play again
+   */
   playAgain = async () =>{
     this.computerScore = 0, this.playerScore = 0, this.tieCount = 1;  
-    await  this.sleep()
+    await sleep(500)
     this.consoleWelcome(true);
   }
-
-  /**
-   * Print the final score of the game.
-   * @param {String} gameResult
-   * @param {String} playerName
-   * @param {String} playerMove
-   * @param {String} computerMove
-   */
-//   formatGameResult = async (properties) => {
-//     await printOutResult.finalWinner(properties); 
-//     await figlet(
-//       `Congrats , ${properties.gameResult} !\n \n You Are The Winner...`,
-//       (err, data) => {
-//         this.log(gradient.pastel.multiline(data) + "\n"); 
-//       }
-//     );
-//     this.computerScore = 0, this.playerScore = 0, this.tieCount = 1;
-//     await this.playAgain(); 
-   
-//   };
 }
 
 
