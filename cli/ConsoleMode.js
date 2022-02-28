@@ -5,7 +5,7 @@ import gradient from "gradient-string";
 import chalkAnimation from "chalk-animation";
 import figlet from "figlet";
 import { createSpinner } from "nanospinner";
-import { repeatedValues} from "../libraries/constact";
+import { repeatedValues} from "../libraries/sustainedValues";
 import RockPaperScissor from "../services/RockPaperScissor";
 
 const [

@@ -6,6 +6,7 @@ import figlet from "figlet";
 import { createSpinner } from "nanospinner";
 import GameComponents from "./GameComponents";
 import ConsoleMode from "../cli/ConsoleMode";
+import printOutResult from "./PrintOutResult";
 
 // print type list
 const [ 
@@ -47,13 +48,14 @@ class RockPaperScissor{
   // * A user can see a console prompt to play again.
 
   constructor(gameMode) {
+
+    printOutResult.isConsoleOrApi = "console"
     this.gameMode = gameMode;
-    
-    
-    this.maxGameTie = 50,this.tieCount = 1,this.playerScore = 0,this.computerScore = 0,this.gameRound = 0;
+    this.maxGameTie = 2,this.tieCount = 1,this.playerScore = 0,this.computerScore = 0,this.gameRound = 0;
     this.playerName = "";
     this.consoleMode = new ConsoleMode();
     this.gameComponents = new GameComponents();
+    // this.printOutResult = new PrintOutResult();
   }
   
   clear = console.clear;
@@ -84,7 +86,7 @@ class RockPaperScissor{
     
       
     let playerMove = "", gameResult = "";
-    let computerMove = this.gameComponents.computerMove();
+    let computerMove = 'rock'//this.gameComponents.computerMove();
     if (gameOption === HUMAN_VS_COMPUTER) { 
         this.playerName = playerName; 
         playerMove = this.gameMode === "console"? await this.consoleMode.humanMove() : externalMove; 
@@ -106,9 +108,11 @@ class RockPaperScissor{
         if (this.computerScore === 2 || this.playerScore === 2) {
           this.printOutOptions(gameOption,playerName,computerMove,playerMove,WINNER,gameResult);
         } else {
+           
           this.printOutOptions(gameOption,playerName,computerMove,playerMove,CURR_SCORE,gameResult);
         }
       } else {
+        console.log(`ioqi=======${CURR_SCORE} ==${this.gameRound}== ${WINNER}`)
         this.printOutOptions(gameOption,playerName,computerMove,playerMove,WINNER,gameResult);
       }
     }
@@ -163,34 +167,49 @@ class RockPaperScissor{
      * @param {String} gameResult 
      */
   printOutOptions = async (gameOption,playerName,computerMove,playerMove,printType,gameResult = "") => {
-    const spinner = createSpinner("Loading the result...").start();
-    await this.sleep();
     
+    let property = {gameResult,playerName,moves:{playerMove,computerMove},scores:{playerScore:this.playerScore,computerScore:this.computerScore},tieCount:this.tieCount,gameMode:this.gameMode}
 
     switch (printType) {
       case TEMP_TIED:
-        spinner.error({
-          text: `The game is tied, ${this.commonTextDisplay(gameResult,playerName,playerMove,computerMove)}, tie count ${this.tieCount}. ${chalk.green("Continue playing the game")}`,
-        });
+        // spinner.error({
+        //   text: `The game is tied, ${this.commonTextDisplay(gameResult,playerName,playerMove,computerMove)}, tie count ${this.tieCount}. ${chalk.green("Continue playing the game")}`,
+        // });
+        // console.log(`SHOW game mode ${printOutResult.isConsoleOrApi}`);
+        
+        await printOutResult.temporaryTied(property)
         this.tieCount++;
         this.gameProcess(gameOption, playerName);
         break;
       case PERM_TIED:
-        spinner.error({
-          text: `After ${this.tieCount} rounds of play, the game, sponsored by ${this.commonTextDisplay(gameResult,playerName,playerMove,computerMove)}, 🙅‍♂️ is officially tied`,
-        });
+        // const spinner = createSpinner("Loading the result...").start();
+        // await this.sleep();
+        // let property = {gameResult,playerName,moves:{playerMove,computerMove},scores:{playerScore:this.playerScore,computerScore:this.computerScore},tieCount:this.tieCount,gameMode:this.gameMode}
+        // spinner.error({
+        //   text: `After ${this.tieCount} rounds of play, the game, sponsored by ${this.commonTextDisplay(gameResult,playerName,playerMove,computerMove)}, 🙅‍♂️ is officially tied`,
+        // });
+        await printOutResult.temporaryTied(property)
         process.exit();
         break;
       case CURR_SCORE:
-        spinner.success({
-          text: `Current score..., ** round ${
-            4 - this.gameRound
-          } ** ${this.commonTextDisplay(gameResult,playerName,playerMove,computerMove)}, ${chalk.green("Play again")}`,
-        });
+          console.log(`TYPE OF score=== ${CURR_SCORE} , === ${printType}`)
+        // const spinner = createSpinner("Loading the result...").start();
+        // await this.sleep();
+        
+        // spinner.success({
+        //   text: `Current score..., ** round ${
+        //     4 - this.gameRound
+        //   } ** ${this.commonTextDisplay(gameResult,playerName,playerMove,computerMove)}, ${chalk.green("Play again")}`,
+        // });
+        property.gameRound = this.gameRound;
+        await printOutResult.currentScore(property)
         this.gameRound--, this.tieCount = 1;
         this.gameProcess(gameOption, playerName);
         break;
       case WINNER:
+        // const spinner = createSpinner("Loading the result...").start();
+        // await this.sleep();
+        console.log(`TYPE OF WINNER=== ${WINNER} , === ${printType}`)
          this.formatGameResult(gameResult,playerName,playerMove,computerMove,spinner);
         break;
       default:

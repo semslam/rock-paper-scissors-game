@@ -1,4 +1,4 @@
-import {repeatedValues} from "../libraries/constact";
+import {repeatedValues} from "../libraries/sustainedValues";
 
 const [
     ROCK,
