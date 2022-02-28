@@ -19,7 +19,7 @@ const [
         ] = printOutType;
 const sleep = (ms = 2000) => new Promise((r) => setTimeout(r, ms));
 
-var isConsoleOrApi =''
+// var isConsoleOrApi =''
 const gameComponents = new GameComponents();
 
 
@@ -36,7 +36,10 @@ let spinSleepAndPrint = async (type,text)=>{
             break;
         case CURR_SCORE:
             spinner.success({text: text,});
-            break;    
+            break; 
+        case WINNER:
+            spinner.success({text: text,});
+            break;        
         default:
             console.log('Wrong parameter pass in spinSleepAndPrint')
             break;
@@ -85,27 +88,29 @@ let temporaryTied = async (properties)=>{
     let permanentTied = async (properties)=>{
         const {gameResult,playerName,moves,scores,tieCount,gameMode} = properties;
        
-        let text = `After ${tieCount} rounds of play, the game, sponsored by ${commonTextDisplay(gameResult,playerName,moves,scores)}, 🙅‍♂️ is officially tied`;
+        let text = `The game sponsored by ${commonTextDisplay(gameResult,playerName,moves,scores)},${chalk.red(` 🙅‍♂️ continuing tie after ${tieCount} rounds of play, which is now officially tied`)}`;
         if(gameMode === "console")
-        await spinSleepAndPrint(CURR_SCORE,text);
+        await spinSleepAndPrint(PERM_TIED,text);
         else
           return text;   
     }
    let currentScore = async (properties) =>{
-        const {gameResult,playerName,moves,scores,tieCount,gameMode} = properties;
+        const {gameResult,playerName,moves,scores,gameMode,gameRound} = properties;
 
         let text = `Current score..., ** round ${4 - gameRound } ** ${commonTextDisplay(gameResult,playerName,moves,scores)}, ${chalk.green("Play again")}`
         if(gameMode === "console")
-          await spinSleepAndPrint(PERM_TIED,text);
+          await spinSleepAndPrint(CURR_SCORE,text);
         else
         return text;
     }
-    // winner = (options) =>{
-    //     figlet(
-    //         `Congrats , ${gameResult} !\n \n You Are The Winner...`,
-    //         options
-    //       );
-    // }
+   let  finalWinner = async (properties) =>{
+        const {gameResult,playerName,moves,scores,gameMode} = properties;
+        let text = `The winner is ${gameResult} *🤝 😁 🤴 🥳 🥂 🕺 💃 🍾* ${commonTextDisplay(gameResult,playerName,moves,scores)}`
+        if(gameMode === "console")
+          await spinSleepAndPrint(WINNER,text);
+        else
+        return text;
+    }
 
 
 
@@ -113,9 +118,5 @@ export default {
     temporaryTied,
     permanentTied,
     currentScore,
-    // winner
+    finalWinner
 }
-
-// export default commonTextDisplay
-
-// temporaryTied({gameResult:"ibro",playerName:"ibro",playerMove:"rock",computerMove:"rock",scores:{playerScore:1,computerScore:1},tieCount:1})

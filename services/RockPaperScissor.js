@@ -104,17 +104,11 @@ class RockPaperScissor{
       this.printOutOptions(gameOption,playerName,computerMove,playerMove,TEMP_TIED,gameResult);
     } else {
       gameResult === COMPUTER ? this.computerScore++ : this.playerScore++;
-      if (this.gameRound > 1) {
-        if (this.computerScore === 2 || this.playerScore === 2) {
-          this.printOutOptions(gameOption,playerName,computerMove,playerMove,WINNER,gameResult);
-        } else {
-           
-          this.printOutOptions(gameOption,playerName,computerMove,playerMove,CURR_SCORE,gameResult);
-        }
-      } else {
-        console.log(`ioqi=======${CURR_SCORE} ==${this.gameRound}== ${WINNER}`)
-        this.printOutOptions(gameOption,playerName,computerMove,playerMove,WINNER,gameResult);
-      }
+      if (this.gameRound > 1) 
+        if (this.computerScore === 2 || this.playerScore === 2) this.printOutOptions(gameOption,playerName,computerMove,playerMove,WINNER,gameResult);
+         else this.printOutOptions(gameOption,playerName,computerMove,playerMove,CURR_SCORE,gameResult);
+        
+       else this.printOutOptions(gameOption,playerName,computerMove,playerMove,WINNER,gameResult);
     }
   };
 
@@ -134,29 +128,6 @@ class RockPaperScissor{
       : this.printOutOptions(gameOption,playerName,computerMove,playerMove,PERM_TIED,gameResult);
   };
 
-
-  /**
-   * This format common game result
-   * @param {String} gameResult 
-   * @param {String} playerName 
-   * @param {String} playerMove 
-   * @param {String} computerMove 
-   * @returns {String} result
-   */
-  commonTextDisplay = (gameResult,playerName,playerMove,computerMove)=>{
-
-   let pickEmojiExpression = (result, actor) =>{return result === actor ? "😁" : result === TIED?  "🙄":"😞"}
-    return `(${playerName}):${
-        pickEmojiExpression(gameResult,playerName)
-      }  ${this.gameComponents.chooseEmojiMove(playerMove)}(${playerMove}) ${
-        this.playerScore
-      } VS ${this.computerScore} ${computerMove} ${this.gameComponents.chooseEmojiMove(
-        computerMove
-      )} ${
-        pickEmojiExpression(gameResult,COMPUTER)
-      }:(Computer)`
-}
-
     /**
      * This print out result base options
      * @param {String} gameOption 
@@ -168,55 +139,43 @@ class RockPaperScissor{
      */
   printOutOptions = async (gameOption,playerName,computerMove,playerMove,printType,gameResult = "") => {
     
-    let property = {gameResult,playerName,moves:{playerMove,computerMove},scores:{playerScore:this.playerScore,computerScore:this.computerScore},tieCount:this.tieCount,gameMode:this.gameMode}
+    let property = {gameResult,playerName,moves:{playerMove,computerMove},scores:{playerScore:this.playerScore,computerScore:this.computerScore},gameMode:this.gameMode}
 
     switch (printType) {
       case TEMP_TIED:
-        // spinner.error({
-        //   text: `The game is tied, ${this.commonTextDisplay(gameResult,playerName,playerMove,computerMove)}, tie count ${this.tieCount}. ${chalk.green("Continue playing the game")}`,
-        // });
-        // console.log(`SHOW game mode ${printOutResult.isConsoleOrApi}`);
-        
+        property.tieCount = this.tieCount;
         await printOutResult.temporaryTied(property)
         this.tieCount++;
         this.gameProcess(gameOption, playerName);
         break;
       case PERM_TIED:
-        // const spinner = createSpinner("Loading the result...").start();
-        // await this.sleep();
-        // let property = {gameResult,playerName,moves:{playerMove,computerMove},scores:{playerScore:this.playerScore,computerScore:this.computerScore},tieCount:this.tieCount,gameMode:this.gameMode}
-        // spinner.error({
-        //   text: `After ${this.tieCount} rounds of play, the game, sponsored by ${this.commonTextDisplay(gameResult,playerName,playerMove,computerMove)}, 🙅‍♂️ is officially tied`,
-        // });
-        await printOutResult.temporaryTied(property)
+        property.tieCount = this.tieCount;
+        await printOutResult.permanentTied(property)
         process.exit();
         break;
       case CURR_SCORE:
-          console.log(`TYPE OF score=== ${CURR_SCORE} , === ${printType}`)
-        // const spinner = createSpinner("Loading the result...").start();
-        // await this.sleep();
-        
-        // spinner.success({
-        //   text: `Current score..., ** round ${
-        //     4 - this.gameRound
-        //   } ** ${this.commonTextDisplay(gameResult,playerName,playerMove,computerMove)}, ${chalk.green("Play again")}`,
-        // });
         property.gameRound = this.gameRound;
         await printOutResult.currentScore(property)
         this.gameRound--, this.tieCount = 1;
         this.gameProcess(gameOption, playerName);
         break;
       case WINNER:
-        // const spinner = createSpinner("Loading the result...").start();
-        // await this.sleep();
-        console.log(`TYPE OF WINNER=== ${WINNER} , === ${printType}`)
-         this.formatGameResult(gameResult,playerName,playerMove,computerMove,spinner);
+        // await this.formatGameResult(property);
+        await printOutResult.finalWinner(property); 
+        await this.consoleMode.congratsWinner(gameResult)
+        await this.playAgain();
         break;
       default:
         console.log("Wrong parameter pass");
         break;
     }
   };
+
+  playAgain = async () =>{
+    this.computerScore = 0, this.playerScore = 0, this.tieCount = 1;  
+    await  this.sleep()
+    this.consoleWelcome(true);
+  }
 
   /**
    * Print the final score of the game.
@@ -225,28 +184,20 @@ class RockPaperScissor{
    * @param {String} playerMove
    * @param {String} computerMove
    */
-  formatGameResult = async (gameResult,playerName,playerMove,computerMove,spinner) => {
-    figlet(
-      `Congrats , ${gameResult} !\n \n You Are The Winner...`,
-      (err, data) => {
-        this.log(gradient.pastel.multiline(data) + "\n");
-        spinner.success({
-          text: `The winner is ${gameResult} *🤝 😁 🤴 🥳 🥂 🕺 💃 🍾* ${this.commonTextDisplay(gameResult,playerName,playerMove,computerMove)}`,
-        });
-        this.computerScore = 0, this.playerScore = 0, this.tieCount = 1;
-         this.consoleWelcome(true);
-      }
-    );
-    // winner((err, data) => {
-    //     this.log(gradient.pastel.multiline(data) + "\n");
-    //     spinner.success({
-    //       text: `The winner is ${gameResult} *🤝 😁 🤴 🥳 🥂 🕺 💃 🍾* ${this.commonTextDisplay(gameResult,playerName,playerMove,computerMove)}`,
-    //     });
-    //     this.computerScore = 0, this.playerScore = 0, this.tieCount = 1;
-    //      this.consoleWelcome(true);
-    //   })
+//   formatGameResult = async (properties) => {
+//     await printOutResult.finalWinner(properties); 
+//     await figlet(
+//       `Congrats , ${properties.gameResult} !\n \n You Are The Winner...`,
+//       (err, data) => {
+//         this.log(gradient.pastel.multiline(data) + "\n"); 
+//       }
+//     );
+//     this.computerScore = 0, this.playerScore = 0, this.tieCount = 1;
+//     await this.playAgain(); 
    
-  };
+//   };
 }
+
+
 
 export default RockPaperScissor;

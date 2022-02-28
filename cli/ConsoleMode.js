@@ -141,21 +141,12 @@ class ConsoleMode{
 
   /**
    * Print the final score of the game.
-   * @param {String} gameResult
-   * @param {String} playerName
-   * @param {String} playerMove
-   * @param {String} computerMove
    */
-   formatGameResult = (gameResult,playerName,playerMove,computerMove,spinner) => {
+   congratsWinner = async (winnerName) => {
     figlet(
-      `Congrats , ${gameResult} !\n \n You Are The Winner...`,
+      `Congrats , ${winnerName} !\n \n You Are The Winner...`,
       (err, data) => {
         this.log(gradient.pastel.multiline(data) + "\n");
-        spinner.success({
-          text: `The winner is ${gameResult} *🤝 😁 🤴 🥳 🥂 🕺 💃 🍾* ${this.commonTextDisplay(gameResult,playerName,playerMove,computerMove)}`,
-        });
-        this.computerScore = 0, this.playerScore = 0, this.tieCount = 1;
-        this.startNewGame(true);
       }
     );
   };
