@@ -4,6 +4,6 @@
 
 // const consoleMode = new ConsoleMode()
 // consoleMode.welcome()
-import RockPaperScissor from  './services/RockPaperScissor';
+import RockPaperScissor from  '../services/RockPaperScissor.js';
 const consoleGame = new RockPaperScissor("console");
 consoleGame.consoleWelcome();

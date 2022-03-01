@@ -2,10 +2,11 @@
   "name": "rock-paper-scissor-game",
   "version": "1.0.0",
   "description": "A console-based rock-paper-scissors game is played by two players, one human and one computer.",
-  "main": "index.js",
+  "main": "server.js",
   "type": "module",
   "scripts": {
-    "start": "node --experimental-modules --es-module-specifier-resolution=node index.js",
+    "dev": "node --experimental-specifier-resolution=node nodemon server",
+    "start": "node --experimental-modules --es-module-specifier-resolution=node cli/index.js",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
   },
   "repository": {
@@ -21,10 +22,13 @@
   "dependencies": {
     "chalk": "^5.0.0",
     "chalk-animation": "^1.6.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.3",
     "figlet": "^1.5.2",
     "gradient-string": "^2.0.0",
     "inquirer": "^8.2.0",
-    "nanospinner": "^1.0.0"
+    "nanospinner": "^1.0.0",
+    "nodemon": "^2.0.15"
   },
   "devDependencies": {
     "jest": "^27.5.1"

@@ -4,9 +4,7 @@ import inquirer from "inquirer";
 import gradient from "gradient-string";
 import chalkAnimation from "chalk-animation";
 import figlet from "figlet";
-import { createSpinner } from "nanospinner";
 import { repeatedValues} from "../libraries/sustainedValues";
-import RockPaperScissor from "../services/RockPaperScissor";
 import sleep from "../libraries/sleep";
 
 const [
