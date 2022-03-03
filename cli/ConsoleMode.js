@@ -4,8 +4,8 @@ import inquirer from "inquirer";
 import gradient from "gradient-string";
 import chalkAnimation from "chalk-animation";
 import figlet from "figlet";
-import { repeatedValues} from "../libraries/sustainedValues";
-import sleep from "../libraries/sleep";
+import { repeatedValues} from "../libraries/sustainedValues.js";
+import sleep from "../libraries/sleep.js";
 
 const [
     ROCK,
@@ -108,7 +108,7 @@ class ConsoleMode{
 
     return{
         gameRound : chooseGameMode.gameRound,
-        playerType : playerType,
+        playerName : playerType,
         gameOption : chooseGameMode.gameOption
     }
   };
@@ -128,7 +128,10 @@ class ConsoleMode{
         { name: "Scissors ✌️", value: SCISSORS },
       ],
     });
-    return result.move;
+
+    return new Promise((resolve, reject) => {
+        resolve(result.move);
+    });
   };
 
   /**

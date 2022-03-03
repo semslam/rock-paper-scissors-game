@@ -24,9 +24,9 @@ app.get("/", (req, res) => {
   res.json({ message: "Welcome to Welcome to rock paper scissors" });
 });
 
-app.post("/", (req, res) => {
-  res.json({ message:req.body});
-});
+// app.post("/", (req, res) => {
+//   res.json({ message:req.body});
+// });
 
 
 passer(app);

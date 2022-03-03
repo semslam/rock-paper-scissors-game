@@ -1,4 +1,4 @@
-import {repeatedValues} from "../libraries/sustainedValues";
+import {repeatedValues} from "../libraries/sustainedValues.js";
 
 const [
     ROCK,
