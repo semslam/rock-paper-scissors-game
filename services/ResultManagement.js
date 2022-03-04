@@ -19,10 +19,42 @@ const [
         CURR_SCORE, 
         WINNER 
         ] = printOutType;
-    const [CONSOLE,API, CONSOLE_AND_API] = isConsoleOrApi;    
+    const [CONSOLE,API] = isConsoleOrApi;    
 
 // var isConsoleOrApi =''
 const gameComponents = new GameComponents();
+let gameRecord ={}
+let keep = {
+    startTime:"",
+    endTime:"",
+    gameMode:"api",
+    gameType:"humanVsComputer",
+    isWinOrDraw:true,
+    winner:"computer",
+    scoreRecord:{
+        playerOne:{
+            name:"",
+            scores:0
+        },
+        playerTwo:{
+            name:"",
+            scores:0
+        }
+    },
+    playingHistory:[
+        { scoreType:"draw",playerOne:"computer",playerOneMove:"rock",playerOneScores:1,playerTwo:"computer",playerTwoMove:"scissors",playerOneScores:1}
+    ],
+    rowRecords:[
+    "Current score..., ** round 1 ** (Olanrewaju):😞  🤜(rock) 0 VS 1 paper ✋ 😁:(Computer), Play again",
+    "The game is tied, (Olanrewaju):🙄  🤜(rock) 0 VS 1 rock 🤜 🙄:(Computer), tie count 1. Continue playing the game",
+    "The winner is computer *🤝 😁 🤴 🥳 🥂 🕺 💃 🍾* (Olanrewaju):😞  🤜(rock) 0 VS 1 rock 🤜 😁:(Computer)"
+    ],
+    winningTimes:2,
+    drawTimes:0,
+    createDate:""
+
+
+}
 
 let resultStick = [];
 let tempResult = [];
@@ -84,6 +116,7 @@ let temporaryTied = async (properties,apiRes)=>{
     const {gameResult,playerName,moves,scores,tieCount,gameMode,gameOption} = properties;
     let commonText = commonTextDisplay(gameResult,playerName,moves,scores);
     let text = `The game is tied, ${commonText}, tie count ${tieCount}. ${gameMode === CONSOLE? chalk.green("Continue playing the game"): "Continue playing the game"}`;
+
     if(gameMode === CONSOLE){
         await spinSleepAndPrint(TEMP_TIED,text);
     }else{
@@ -120,7 +153,7 @@ let temporaryTied = async (properties,apiRes)=>{
           await spinSleepAndPrint(CURR_SCORE,text);
         else{
             resultStick.push(text);
-            tempResult.push(text)
+            tempResult.push(text);
             console.log(`|========SEMSALM========|${gameResult}`)
             if(gameOption === HUMAN_VS_COMPUTER)
                 getResult(apiRes,"CURRENT SCORE",tempResult);

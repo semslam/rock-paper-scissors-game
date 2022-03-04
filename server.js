@@ -21,7 +21,7 @@ app.use(express.urlencoded({ extended: true }));   /* bodyParser.urlencoded() is
 
 // simple route
 app.get("/", (req, res) => {
-  res.json({ message: "Welcome to Welcome to rock paper scissors" });
+  res.json({ message: "Welcome to Welcome to rock paper scissors game" });
 });
 
 // app.post("/", (req, res) => {

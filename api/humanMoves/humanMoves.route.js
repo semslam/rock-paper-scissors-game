@@ -1,9 +1,7 @@
 import humanMoves from "./humanMoves.controllers.js";
 
-export default (app) => {
+export default (router) => {
     
-    const router = app;
-
     // accept game options request
     router.post('/game_options/', humanMoves.provideGameOption);
     //
