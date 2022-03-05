@@ -1,18 +1,23 @@
 import GameRecord from "../models/mongodb/GameRecordsSchema.js"
 
 
-create = async (query) =>{
+const create = async (query) =>{
     try {
+        console.log(`||=========Before Inserting Game Records ===========||`);
+        console.log(query)
         const gameRecord = await GameRecord.create(query);
+        console.log(`||=========Inserting Game Records ===========||`);
+        console.log(gameRecord)
         if(!gameRecord) throw Error('It cannot create user');
         return true;
 
     } catch (err) {
-        return  err;
+        console.log(err)
+        throw Error(err)
     }
    
 }
-update = async (filter, update) =>{
+const update = async (filter, update) =>{
     try {
         const gameRecord = await GameRecord.findOneAndUpdate(filter, update, {
             returnOriginal: false
@@ -25,7 +30,7 @@ update = async (filter, update) =>{
    
 }
 
-findOne = async (query) =>{
+const findOne = async (query) =>{
     try {
         const gameRecord = await GameRecord.findOne(query).exec();
         if(!gameRecord) throw Error('It cannot find game record entries.');
@@ -36,7 +41,7 @@ findOne = async (query) =>{
     }
    
 }
-find = async (query) =>{
+const find = async (query) =>{
     try {
         const gameRecord = await GameRecord.find(query);
         if(!gameRecord) throw Error('It cannot find game records.');

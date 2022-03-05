@@ -1,18 +1,22 @@
 import userSchema from "../models/mongodb/UserSchema.js"
 
 
-create = async (query) =>{
+const create = async (query) =>{
     try {
+        
+       const isExist = await userSchema.findOne({username:query.username}).exec();
+       if(isExist) throw new Error('User already exist') 
         const user = await userSchema.create(query);
-        if(!user) throw Error('It cannot create user');
-        return true;
+        if(!user) throw new Error('It cannot create user');
+        return user;
 
     } catch (err) {
+        console.log(err)
         throw new Error(err);
     }
    
 }
-update = async (filter, update) =>{
+const update = async (filter, update) =>{
     try {
         const user = await userSchema.findOneAndUpdate(filter, update, {
             returnOriginal: false
@@ -25,10 +29,12 @@ update = async (filter, update) =>{
    
 }
 
-findOne = async (query) =>{
+const findOne = async (query) =>{
     try {
-        const user = await userSchema.findOne(query).exec();
-        if(!user) throw Error('It cannot find user entries.');
+        console.log(query);
+        const user = await userSchema.findOne({ username: 'semslam@gmail.com' }).lean();
+        console.log(user);
+        if(!user) throw Error('It cannot find user in the entries.');
         return user;
 
     } catch (err) {
@@ -36,7 +42,7 @@ findOne = async (query) =>{
     }
    
 }
-find = async (query) =>{
+const find = async (query) =>{
     try {
         const users = await userSchema.find(query);
         if(!users) throw Error('It cannot find message entries.');

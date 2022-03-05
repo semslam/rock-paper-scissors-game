@@ -4,8 +4,8 @@ import {payloadValidateErrorResponse} from "../../response/apiResponse.js";
 
 const playingValidation = data =>{
     const schema = Joi.object({
-        playersType:Joi.string().allow("computerVsComputer","humanVsComputer").required(),
-        gameRound: Joi.string().allow(1,3).required().required()
+        playersType:Joi.string().valid("computerVsComputer","humanVsComputer").required(),
+        gameRound: Joi.string().valid(1,3).required()
       });
       return schema.validate(data);
 }
@@ -30,7 +30,7 @@ const playerNameValidateReq = (req,res,next) =>{
 
 const playerMoveValidation = data =>{
     const schema = Joi.object({
-        playersType:Joi.string().allow(["rock","paper","scissors"]).required(),   
+        playersMove:Joi.string().valid("rock","paper","scissors").required(),   
       });
       return schema.validate(data);
 }

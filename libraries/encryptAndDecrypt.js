@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import CryptoJS from "crypto-js";
 import jwt from "jsonwebtoken";
+import "dotenv/config";
 
 
 const sha512Encrypt = (data, secretKey)=> {
@@ -15,8 +16,13 @@ const sha512Encrypt = (data, secretKey)=> {
     
 }
 
-const generateAccessToken =(user) =>{
-    return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "50s" })// 60, "2 days", "10h", "7d"
+const generateAccessToken =(data) =>{
+    try {
+        return jwt.sign(data, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "50s" })// 60, "2 days", "10h", "7d"
+    } catch (err) {
+        throw new Error(err); 
+    }
+    
   }
 
 const hashPassword = async (password)=>{

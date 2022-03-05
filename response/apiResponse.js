@@ -30,7 +30,7 @@ const errorResponse = (res,HTTP_ERROR,errorMessage) =>{
 const payloadValidateErrorResponse = (res,next,error) =>{
     const isError = (error === undefined)? true:false;
     if(!isError){
-        result = {
+       let result = {
             code:422,
             timestamp: timestamp,
             status:STATUS_FAILED,

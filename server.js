@@ -2,6 +2,8 @@ import express from "express";
 // const connectDB = require('./models/mongodb/config');
 import cors from "cors";
 import passer from "./api/routes.js";
+import connectDB from "./models/mongodb/config.js";
+
 
 // Connect to MongoDB
 // connectDB()
@@ -12,6 +14,9 @@ var corsOptions = {
 };
 
 app.use(cors(corsOptions));
+
+// Connect to MongoDB
+connectDB()
 
 // parse requests of content-type - application/json
 app.use(express.json());  /* bodyParser.json() is deprecated */

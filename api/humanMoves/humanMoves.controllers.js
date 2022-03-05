@@ -11,6 +11,7 @@ const provideGameOption = (req, res)=>{
 //computer or human
 // choose game round
 // playerName
+// console.log(res)
 gameOptionsAndMoves = {};
 gameOptionsAndMoves.gameRound = req.body.gameRound;
 gameOptionsAndMoves.playingMode = req.body.playersType;

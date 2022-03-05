@@ -4,6 +4,7 @@ import GameComponents from "./GameComponents.js";
 import {repeatedValues, printOutType,isConsoleOrApi} from "../libraries/sustainedValues.js";
 import {getResult} from "../response/Princenter.js"
 import sleep from "../libraries/sleep.js";
+import {create,update,findOne,find} from "../repositories/GameRep.js"
 
 const [
     ROCK,
@@ -19,42 +20,42 @@ const [
         CURR_SCORE, 
         WINNER 
         ] = printOutType;
-    const [CONSOLE,API] = isConsoleOrApi;    
+    const [CONSOLE,API] = isConsoleOrApi; 
+    
+   const resType = {draw:"Draw",win:"Win"}
 
-// var isConsoleOrApi =''
 const gameComponents = new GameComponents();
-let gameRecord ={}
-let keep = {
-    startTime:"",
-    endTime:"",
-    gameMode:"api",
-    gameType:"humanVsComputer",
-    isWinOrDraw:true,
-    winner:"computer",
-    scoreRecord:{
+let gameRecord = {}
+
+let rowData = []
+let drawTimes =0
+let winningTimes = 0;
+ const compilingResult = (records,resultType)=>{
+    
+    rowData.push({ resultType:resultType,playerOne:COMPUTER,playerOneMove:records.moves.computerMove,playerOneScores:records.scores.computerScore,
+        playerTwo:records.playerName,playerTwoMove:records.moves.playerMove,playerTwoScores:records.scores.playerScore});
+    gameRecord.playingHistory = rowData;
+     
+ }
+
+ const finalCompile = (records)=>{
+    gameRecord.clientId = "62222dc983398810e7d52f23";
+    gameRecord.username = "semslam@gmail.com";
+    gameRecord.gameMode =  "api";
+    gameRecord.gameType = records.gameOption;
+    gameRecord.drawTimes =  drawTimes; 
+    gameRecord.winningTimes = winningTimes;
+    gameRecord.scoreRecord ={
         playerOne:{
-            name:"",
-            scores:0
+            name:COMPUTER,
+            scores:records.scores.computerScore
         },
         playerTwo:{
-            name:"",
-            scores:0
+            name:records.playerName,
+            scores:records.scores.playerScore
         }
-    },
-    playingHistory:[
-        { scoreType:"draw",playerOne:"computer",playerOneMove:"rock",playerOneScores:1,playerTwo:"computer",playerTwoMove:"scissors",playerOneScores:1}
-    ],
-    rowRecords:[
-    "Current score..., ** round 1 ** (Olanrewaju):😞  🤜(rock) 0 VS 1 paper ✋ 😁:(Computer), Play again",
-    "The game is tied, (Olanrewaju):🙄  🤜(rock) 0 VS 1 rock 🤜 🙄:(Computer), tie count 1. Continue playing the game",
-    "The winner is computer *🤝 😁 🤴 🥳 🥂 🕺 💃 🍾* (Olanrewaju):😞  🤜(rock) 0 VS 1 rock 🤜 😁:(Computer)"
-    ],
-    winningTimes:2,
-    drawTimes:0,
-    createDate:""
-
-
-}
+    }
+ }
 
 let resultStick = [];
 let tempResult = [];
@@ -111,7 +112,6 @@ let spinSleepAndPrint = async (type,text)=>{
        }:(Computer)`;
  };
 
-
 let temporaryTied = async (properties,apiRes)=>{
     const {gameResult,playerName,moves,scores,tieCount,gameMode,gameOption} = properties;
     let commonText = commonTextDisplay(gameResult,playerName,moves,scores);
@@ -120,57 +120,88 @@ let temporaryTied = async (properties,apiRes)=>{
     if(gameMode === CONSOLE){
         await spinSleepAndPrint(TEMP_TIED,text);
     }else{
+         drawTimes += 1
         resultStick.push(text);
         tempResult.push(text);
+        compilingResult(properties,resType.draw);
         console.log(`|========SEMSALM========|${gameResult}`)
         if(gameOption === HUMAN_VS_COMPUTER)
-            getResult(apiRes,"TIED CONTINUE",tempResult);
+           return getResult(apiRes,"TIED CONTINUE",tempResult);
     }
      
 }
     let permanentTied = async (properties,apiRes)=>{
-        const {gameResult,playerName,moves,scores,tieCount,gameMode} = properties;
+        const {gameResult,playerName,moves,scores,tieCount,gameMode,gameOption} = properties;
         let commonText = commonTextDisplay(gameResult,playerName,moves,scores);
         let path = ` 🙅‍♂️ continuing tie after ${tieCount} rounds of play, which is now officially tied`;
         let text = `The game sponsored by ${commonText},${gameMode === CONSOLE? chalk.red(path): path}`;
         if(gameMode === CONSOLE)
         await spinSleepAndPrint(PERM_TIED,text);
         else{
+            drawTimes +=1
+           
+            finalCompile(properties)
+            gameRecord.isWin = false;
+            compilingResult(properties,resType.draw);
             resultStick.push(text);
-            const data = resultStick;
+            gameRecord.rowRecords = resultStick;
+
             resultStick = [];
             tempResult = [];
+            rowData = []
+            drawTimes =0;
+            winningTimes =0;
+            console.log(apiRes)
             console.log(`|========SEMSALM========|${gameResult}`)
-            getResult(apiRes,"TIED",data)
+            console.log(gameRecord);
+            // insert the result in database
+            await create(gameRecord)
+           return getResult(apiRes,"TIED",gameRecord)
         }
              
     }
    let currentScore = async (properties,apiRes) =>{
         const {gameResult,playerName,moves,scores,gameMode,gameRound,gameOption} = properties;
         let commonText = commonTextDisplay(gameResult,playerName,moves,scores);
-        let text = `Current score..., ** round ${4 - gameRound } ** ${commonText}, ${gameMode === CONSOLE? chalk.green("Play again"):"Play again"}`
+        let text = `Current score..., ** round ${4 - gameRound } ** ${commonText}, ${gameMode === CONSOLE? chalk.green("Play again"):"Play again"}`;
         if(gameMode === CONSOLE)
           await spinSleepAndPrint(CURR_SCORE,text);
         else{
+          
+            winningTimes +=1;
+            compilingResult(properties,resType.win);
             resultStick.push(text);
             tempResult.push(text);
             console.log(`|========SEMSALM========|${gameResult}`)
             if(gameOption === HUMAN_VS_COMPUTER)
-                getResult(apiRes,"CURRENT SCORE",tempResult);
+               return getResult(apiRes,"CURRENT SCORE",tempResult);
         }
     }
    let  finalWinner = async (properties,apiRes) =>{
-        const {gameResult,playerName,moves,scores,gameMode} = properties;
+        const {gameResult,playerName,moves,scores,gameMode,gameOption} = properties;
         let commonText = commonTextDisplay(gameResult,playerName,moves,scores);
-        let text = `The winner is ${gameResult} *🤝 😁 🤴 🥳 🥂 🕺 💃 🍾* ${commonText}`
+        let text = `The winner is ${gameResult} *🤝 😁 🤴 🥳 🥂 🕺 💃 🍾* ${commonText}`;
         if(gameMode === CONSOLE)
           await spinSleepAndPrint(WINNER,text);
         else{
+            gameRecord.isWin = true;
+            gameRecord.winner = gameResult;
+            winningTimes +=1;
+            finalCompile(properties);
+            compilingResult(properties,resType.win);
             resultStick.push(text);
-            const data = resultStick;
+            gameRecord.rowRecords = resultStick;
+
             resultStick = [];
             tempResult = [];
-            getResult(apiRes,"WINNER",data)
+            rowData = [];
+            drawTimes = 0;
+            winningTimes = 0;
+            console.log(apiRes)
+            console.log(`|========SEMSALM========|${gameResult}`)
+            console.log(gameRecord)
+            await create(gameRecord)
+           return getResult(apiRes,"WINNER",gameRecord)
         }
     }
 
