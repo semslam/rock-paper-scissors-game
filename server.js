@@ -3,13 +3,15 @@ import express from "express";
 import cors from "cors";
 import passer from "./api/routes.js";
 import connectDB from "./models/mongodb/config.js";
+import { graphqlHTTP } from "express-graphql";
+import { buildSchema } from "graphql";
 
 
 // Connect to MongoDB
 // connectDB()
 const app = express();
 
-var corsOptions = {
+const corsOptions = {
   origin: "http://localhost:9000"
 };
 
@@ -33,6 +35,26 @@ app.get("/", (req, res) => {
 //   res.json({ message:req.body});
 // });
 
+
+// Construct a schema, using GraphQL schema language
+const schema = buildSchema(`
+  type Query {
+    hello: String
+  }
+`);
+
+// The root provides a resolver function for each API endpoint
+var root = {
+  hello: () => {
+    return 'Hello world!';
+  },
+};
+
+app.use('/graphql', graphqlHTTP({
+  schema: schema,
+  rootValue: root,
+  graphiql: true,
+}));
 
 passer(app);
 // set port, listen for requests
