@@ -3,7 +3,8 @@ import GameComponents from "./GameComponents.js";
 import ConsoleMode from "../cli/ConsoleMode.js";
 import resultManagement from "./ResultManagement.js";
 import {printOutType, repeatedValues,isConsoleOrApi} from "../libraries/sustainedValues.js";
-import {getResult,errorResult} from "../response/Princenter.js"
+import {ErrorCodes} from "../libraries/sustainedValues.js";
+import {errorResponse} from "../response/apiResponse.js";
 import sleep from "../libraries/sleep.js";
  
 
@@ -67,7 +68,6 @@ class RockPaperScissor{
         this.playerName = playerName; 
         playerMove = this.gameComponents.computerMove();
     }
-    console.log({gameOption,playerName,playerMove,gameRound:this.gameRound});
     this.predictMove(gameOption,playerName,playerMove,computerMove,null);
   }
 
@@ -77,7 +77,6 @@ class RockPaperScissor{
     let externalMove = properties.externalMove;
     const playerName = properties.playerName;
     this.token = properties.token;
-    console.log({gameOption, playerName});
     if(gameOption === COMPUTER_VS_COMPUTER){
         this.gameRound = properties.gameRound;
         for (let i = 0; i < this.gameRound; i++) {
@@ -85,11 +84,8 @@ class RockPaperScissor{
         }
     }else if(gameOption === HUMAN_VS_COMPUTER){
         this.gameRound = properties.gameRound;
-        console.info({gameOption,playerName,externalMove});
-        console.log(`Biggin ==== ${this.gameStatus}`)
         if(this.gameStatus){
-            console.log(`End ==== ${this.gameStatus}`)
-            errorResult(apiRes,"The has ended,You are have to start another game");
+            errorResponse(apiRes,ErrorCodes.FORBIDDEN,"The has ended,You are have to start another game");
         }
         this.apiPredictMove(apiRes,gameOption,playerName,externalMove)
     }
@@ -100,22 +96,20 @@ class RockPaperScissor{
     
     try {
         let playerMove = "";
-    let computerMove = "rock"//this.gameComponents.computerMove();
+    let computerMove = this.gameComponents.computerMove();
     if (gameOption === HUMAN_VS_COMPUTER) { 
         this.playerName = playerName;
         playerMove = externalMove; 
     }else if (gameOption === COMPUTER_VS_COMPUTER ) { 
         this.playerName = playerName; 
-        playerMove = "rock"//this.gameComponents.computerMove();
+        playerMove = this.gameComponents.computerMove();
     }
-
-    // console.log({ gameOption,playerName,externalMove,computerMove,apiRes});
     
      this.predictMove(gameOption,playerName,playerMove,computerMove,apiRes);
     } catch (err) {
-       console.log(err) 
+       console.log(err.message)
+       throw new Error(err.message)
     }
-    
     
   }
 
@@ -125,7 +119,6 @@ class RockPaperScissor{
    * @param {String} playerName
    */
   predictMove = async (gameOption, playerName,playerMove,computerMove,apiRes = null) => {
-    console.log({gameOption, playerName,playerMove,computerMove})
    let gameResult = await this.gameComponents.analyticalEngine(this.playerName,playerMove,computerMove);
 
     if (gameResult === TIED) {
@@ -171,8 +164,7 @@ class RockPaperScissor{
   printOutOptions = async (gameOption,playerName,computerMove,playerMove,printType,gameResult = "", apiRes = null) => {
     
     let properties = {gameResult,playerName,moves:{playerMove,computerMove},scores:{playerScore:this.playerScore,computerScore:this.computerScore},gameMode:this.gameMode,gameOption,token:this.token}
-    console.log(properties);
-
+    
     switch (printType) {
         case TEMP_TIED:
             properties.tieCount = this.tieCount;
@@ -193,7 +185,6 @@ class RockPaperScissor{
             process.exit();
           }else{
             await resultManagement.permanentTied(properties,apiRes);
-            console.log("After permanentTied ==========>");
           }
           break;
         case CURR_SCORE:
@@ -218,7 +209,7 @@ class RockPaperScissor{
           
           break;
         default:
-          console.log("Wrong parameter pass");
+          console.log("Wrong parameter pass printOutOptions");
           throw new Error("Wrong parameter pass in printOutOptions");
       }
     

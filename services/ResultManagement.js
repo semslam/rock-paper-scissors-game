@@ -140,7 +140,6 @@ let temporaryTied = async (properties,apiRes)=>{
         if(gameOption === HUMAN_VS_COMPUTER){
             return successResponse(apiRes,HttpCodes.OK,"TIED CONTINUE",resultStick);
         }
-        return;
     }
      
 }
@@ -189,10 +188,10 @@ let temporaryTied = async (properties,apiRes)=>{
             resultStick.push(text);
             tempResult.push(text);
             console.log(`|========SEMSALM=====currentScore===|${gameResult}`)
+            console.log(properties);
             if(gameOption === HUMAN_VS_COMPUTER){
                 return successResponse(apiRes,HttpCodes.OK,"CURRENT SCORE",resultStick);
             } 
-            return;
         }
     }
    let  finalWinner = async (properties,apiRes) =>{
