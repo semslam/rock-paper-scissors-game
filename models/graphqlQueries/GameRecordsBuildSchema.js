@@ -38,10 +38,9 @@ type PlayerTwo {
 const gameRecords = `
 type GameRecords {
     _id: String
-    username:String
+    userId: String
     isWin: Boolean
     winner:String
-    clientId: String
     gameMode: String
     gameType: String
     drawTimes:Int
@@ -53,10 +52,10 @@ type GameRecords {
   }
 `;
 // user(id: String!): User
-// ${user}, // (userId: "62222dc983398810e7d52f23")
+// fetched by userId!, id, limit = 10!, cursor = 1, bigginDate, endDate,
 const gameSchema = buildSchema(`
   type Query {
-    gameRecords(clientId: String!):[GameRecords]
+    gameRecords(userId: String!,id: String):[GameRecords]
   }
   ${gameRecords},
   ${playingHistories},

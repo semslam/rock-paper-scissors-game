@@ -4,7 +4,7 @@ const userSchema = buildSchema(`
     id: String
     username:String
     gender:String
-    createAt:Date
+    createAt:String
   }
 `);
 

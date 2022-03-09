@@ -1,14 +1,8 @@
 import express from "express";
-// const connectDB = require('./models/mongodb/config');
 import cors from "cors";
 import passer from "./api/routes.js";
 import connectDB from "./models/mongodb/config.js";
-import { graphqlHTTP } from "express-graphql";
-import { buildSchema } from "graphql";
 
-
-// Connect to MongoDB
-// connectDB()
 const app = express();
 
 const corsOptions = {
@@ -37,13 +31,14 @@ app.get("/", (req, res) => {
 
 
 passer(app);
-// set port, listen for requests
+
 
 app.all('*', (req, res) => {
   res.status(404).send({
     message: "404 Not Found"
     }); 
 });
+// set port, listen for requests
 const PORT = process.env.PORT || 9000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);

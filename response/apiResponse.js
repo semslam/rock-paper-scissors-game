@@ -1,4 +1,4 @@
-import {convertDateToTimeStamp} from "../libraries/DateFormat.js    ";
+import {convertDateToTimeStamp} from "../libraries/DateFormat.js";
 const STATUS_FAILED = "Failed";
 const STATUS_SUCCESS = "Successful";
 const timestamp = convertDateToTimeStamp(new Date());
@@ -10,10 +10,9 @@ const successResponse = (res,HTTP_SUCCESS,successMessage, data = null) =>{
         status:STATUS_SUCCESS,
         message:successMessage
       }
-    //   result = (data === undefined || data === null || data === [])? result : result.data = data;
       if(data !== undefined || data !== null || data !== [])  result.data = data;
       console.log(result);
-    res.status(HTTP_SUCCESS).send(result);
+   return res.status(HTTP_SUCCESS).send(result);
 }
 
 const errorResponse = (res,HTTP_ERROR,errorMessage) =>{
@@ -22,9 +21,9 @@ const errorResponse = (res,HTTP_ERROR,errorMessage) =>{
         timestamp: timestamp,
         status:STATUS_FAILED,
         message:errorMessage
-      } 
-    //   message:errorMessage.replace(/\\|\//g,'')
-    res.status(HTTP_ERROR).send(result);    
+      }
+      console.log(result);
+   return res.status(HTTP_ERROR).send(result);    
 }
 
 const payloadValidateErrorResponse = (res,next,error) =>{

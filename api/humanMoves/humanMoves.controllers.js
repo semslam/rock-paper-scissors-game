@@ -1,18 +1,22 @@
 // 'use strict';
 import RockPaperScissor from "../../services/RockPaperScissor.js";
-import {successResponse,errorResponse} from "../../response/apiResponse.js"
-import {HttpCodes} from "../../libraries/sustainedValues.js"
+import {successResponse,errorResponse} from "../../response/apiResponse.js";
+import {HttpCodes} from "../../libraries/sustainedValues.js";
+import {isEmpty,isObjEmpty,isNotEmpty,existProperty,isNumber,isBoolean,isString,isNullOrUndefinedType,isArray,isTrue,isFalse,isNull,hasValue} from "../../libraries/Validator.js"
+import auth from "../../middleware/jsonwebtokenAuthentication.js";
+
 
 const rockPaperScissor = new RockPaperScissor("api");
 
 let gameOptionsAndMoves = {};
 
-const provideGameOption = (req, res)=>{
+const provideGameOption = async (req, res)=>{
 //computer or human
 // choose game round
 // playerName
 // console.log(res)
 gameOptionsAndMoves = {};
+gameOptionsAndMoves.token = auth.getToken(req,res);
 gameOptionsAndMoves.gameRound = req.body.gameRound;
 gameOptionsAndMoves.playingMode = req.body.playersType;
 
@@ -30,9 +34,12 @@ let response = {message:`You have chosen ${gameOptionsAndMoves.playingMode} as p
 }
 
 const providePlayerName = (req, res)=>{
-    
+    // check if the gameOptionsAndMoves is empty
+    if(isObjEmpty(gameOptionsAndMoves)){
+        return errorResponse(res,HttpCodes.NOTACCEPTABLE,{ message:"Sorry, you have to restart the game" });
+    }
     if(gameOptionsAndMoves.playingMode === "computerVsComputer"){
-        errorResponse(res,HttpCodes.NOTACCEPTABLE,{ message:"You are not meant to provide player name, the game is playing by computer vs computer" });
+       return errorResponse(res,HttpCodes.NOTACCEPTABLE,{ message:"You are not meant to provide player name, the game is playing by computer vs computer" });
     }else{
         gameOptionsAndMoves.playerName = req.body.playerName
         let response = {message:`Your player name is: ${req.body.playerName}`,nextRequest:['Please choose your move',["rock", "paper", "scissors"]]};
@@ -42,8 +49,12 @@ const providePlayerName = (req, res)=>{
 }
 
 const gameMove = (req, res)=>{
+    // check if the gameOptionsAndMoves is empty
+    if(isObjEmpty(gameOptionsAndMoves)){
+        return errorResponse(res,HttpCodes.NOTACCEPTABLE,{ message:"Sorry, you have to restart the game" });
+    }
     if(gameOptionsAndMoves.playingMode === "computerVsComputer"){
-        errorResponse(res,HttpCodes.NOTACCEPTABLE,{ message:"You are not meant to provide player name, the game is playing by computer vs computer" });
+        return errorResponse(res,HttpCodes.NOTACCEPTABLE,{ message:"You are not meant to provide player name, the game is playing by computer vs computer" });
     }else{
         gameOptionsAndMoves.externalMove = req.body.playersMove;
         rockPaperScissor.apiPlayingProcess(res,gameOptionsAndMoves);

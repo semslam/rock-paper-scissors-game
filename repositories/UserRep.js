@@ -5,14 +5,13 @@ const create = async (query) =>{
     try {
         
        const isExist = await userSchema.findOne({username:query.username}).exec();
-       if(isExist) throw new Error('User already exist') 
+       if(isExist) throw Error('User already exist') 
         const user = await userSchema.create(query);
         if(!user) throw new Error('It cannot create user');
         return user;
 
     } catch (err) {
-        console.log(err)
-        throw new Error(err);
+        throw err.message;
     }
    
 }
@@ -24,21 +23,19 @@ const update = async (filter, update) =>{
 
     return user
     } catch (err) {
-        throw new Error(err);
+        throw err.message;
     }
    
 }
 
 const findOne = async (query) =>{
     try {
-        console.log(query);
-        const user = await userSchema.findOne({ username: 'semslam@gmail.com' }).lean();
-        console.log(user);
+        const user = await userSchema.findOne(query).exec();
         if(!user) throw Error('It cannot find user in the entries.');
         return user;
 
     } catch (err) {
-        throw new Error(err);
+        throw err.message;
     }
    
 }
@@ -49,7 +46,7 @@ const find = async (query) =>{
         return users;
 
     } catch (err) {
-        throw new Error(err);
+        throw err.message;
     }
    
 }

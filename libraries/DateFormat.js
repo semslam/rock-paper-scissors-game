@@ -1,6 +1,6 @@
 
   const convertDateToTimeStamp = (strDateTime)=>{
-    let datum = Date.parse(strDateTime);
+    const datum = Date.parse(strDateTime);
    return datum/1000;
   }
 

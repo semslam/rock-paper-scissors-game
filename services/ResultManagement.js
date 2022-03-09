@@ -4,7 +4,10 @@ import GameComponents from "./GameComponents.js";
 import {repeatedValues, printOutType,isConsoleOrApi} from "../libraries/sustainedValues.js";
 import {getResult} from "../response/Princenter.js"
 import sleep from "../libraries/sleep.js";
-import {create,update,findOne,find} from "../repositories/GameRep.js"
+import {create,update,findOne,find} from "../repositories/GameRep.js";
+import {decryptToken} from "../libraries/encryptAndDecrypt.js";
+import {successResponse,errorResponse} from "../response/apiResponse.js";
+import {HttpCodes} from "../libraries/sustainedValues.js"
 
 const [
     ROCK,
@@ -30,18 +33,26 @@ let gameRecord = {}
 let rowData = []
 let drawTimes =0
 let winningTimes = 0;
+
  const compilingResult = (records,resultType)=>{
     
-    rowData.push({ resultType:resultType,playerOne:COMPUTER,playerOneMove:records.moves.computerMove,playerOneScores:records.scores.computerScore,
-        playerTwo:records.playerName,playerTwoMove:records.moves.playerMove,playerTwoScores:records.scores.playerScore});
+    rowData.push({ 
+        resultType:resultType,playerOne:COMPUTER,
+        playerOneMove:records.moves.computerMove,
+        playerOneScores:records.scores.computerScore,
+        playerTwo:records.playerName,
+        playerTwoMove:records.moves.playerMove,
+        playerTwoScores:records.scores.playerScore
+    });
     gameRecord.playingHistory = rowData;
      
  }
 
- const finalCompile = (records)=>{
-    gameRecord.clientId = "62222dc983398810e7d52f23";
-    gameRecord.username = "semslam@gmail.com";
-    gameRecord.gameMode =  "api";
+ const finalCompile = async (records,userToken)=>{
+    const uniqId = async (token)=> {return await decryptToken(token);}
+    const token = await uniqId(userToken);
+    gameRecord.userId = token.id;
+    gameRecord.gameMode =  API;
     gameRecord.gameType = records.gameOption;
     gameRecord.drawTimes =  drawTimes; 
     gameRecord.winningTimes = winningTimes;
@@ -105,7 +116,7 @@ let spinSleepAndPrint = async (type,text)=>{
          pickEmojiExpression(gameResult,playerName)
        }  ${gameComponents.chooseEmojiMove(moves.playerMove)}(${moves.playerMove}) ${
         scores.playerScore
-       } VS ${scores.computerScore} ${moves.computerMove} ${gameComponents.chooseEmojiMove(
+       } VS (${scores.computerScore}) ${moves.computerMove} ${gameComponents.chooseEmojiMove(
         moves.computerMove
        )} ${
          pickEmojiExpression(gameResult,COMPUTER)
@@ -124,14 +135,17 @@ let temporaryTied = async (properties,apiRes)=>{
         resultStick.push(text);
         tempResult.push(text);
         compilingResult(properties,resType.draw);
-        console.log(`|========SEMSALM========|${gameResult}`)
-        if(gameOption === HUMAN_VS_COMPUTER)
-           return getResult(apiRes,"TIED CONTINUE",tempResult);
+        console.log(`|========SEMSALM====temporaryTied====|${gameResult}`);
+        console.log(properties);
+        if(gameOption === HUMAN_VS_COMPUTER){
+            return successResponse(apiRes,HttpCodes.OK,"TIED CONTINUE",resultStick);
+        }
+        return;
     }
      
 }
     let permanentTied = async (properties,apiRes)=>{
-        const {gameResult,playerName,moves,scores,tieCount,gameMode,gameOption} = properties;
+        const {gameResult,playerName,moves,scores,tieCount,gameMode,gameOption,token} = properties;
         let commonText = commonTextDisplay(gameResult,playerName,moves,scores);
         let path = ` 🙅‍♂️ continuing tie after ${tieCount} rounds of play, which is now officially tied`;
         let text = `The game sponsored by ${commonText},${gameMode === CONSOLE? chalk.red(path): path}`;
@@ -140,23 +154,25 @@ let temporaryTied = async (properties,apiRes)=>{
         else{
             drawTimes +=1
            
-            finalCompile(properties)
+            await finalCompile(properties,token)
             gameRecord.isWin = false;
+            gameRecord.winner = "N/A";
             compilingResult(properties,resType.draw);
             resultStick.push(text);
             gameRecord.rowRecords = resultStick;
 
-            resultStick = [];
-            tempResult = [];
-            rowData = []
-            drawTimes =0;
-            winningTimes =0;
-            console.log(apiRes)
-            console.log(`|========SEMSALM========|${gameResult}`)
-            console.log(gameRecord);
+            resultStick = [];tempResult = [];rowData = [];drawTimes =0;winningTimes =0;
+            
+            // console.log(apiRes)
+            console.log(`|========SEMSALM====permanentTied====|${gameResult}`)
+            console.log(properties);
             // insert the result in database
-            await create(gameRecord)
-           return getResult(apiRes,"TIED",gameRecord)
+            const game = await create(gameRecord);
+            console.log(game)
+            let data = {}
+            data = gameRecord;
+            gameRecord = {}
+           return await successResponse(apiRes,HttpCodes.OK,"TIED",game);
         }
              
     }
@@ -172,13 +188,15 @@ let temporaryTied = async (properties,apiRes)=>{
             compilingResult(properties,resType.win);
             resultStick.push(text);
             tempResult.push(text);
-            console.log(`|========SEMSALM========|${gameResult}`)
-            if(gameOption === HUMAN_VS_COMPUTER)
-               return getResult(apiRes,"CURRENT SCORE",tempResult);
+            console.log(`|========SEMSALM=====currentScore===|${gameResult}`)
+            if(gameOption === HUMAN_VS_COMPUTER){
+                return successResponse(apiRes,HttpCodes.OK,"CURRENT SCORE",resultStick);
+            } 
+            return;
         }
     }
    let  finalWinner = async (properties,apiRes) =>{
-        const {gameResult,playerName,moves,scores,gameMode,gameOption} = properties;
+        const {gameResult,playerName,moves,scores,gameMode,gameOption,token} = properties;
         let commonText = commonTextDisplay(gameResult,playerName,moves,scores);
         let text = `The winner is ${gameResult} *🤝 😁 🤴 🥳 🥂 🕺 💃 🍾* ${commonText}`;
         if(gameMode === CONSOLE)
@@ -187,21 +205,21 @@ let temporaryTied = async (properties,apiRes)=>{
             gameRecord.isWin = true;
             gameRecord.winner = gameResult;
             winningTimes +=1;
-            finalCompile(properties);
+            await finalCompile(properties,token);
             compilingResult(properties,resType.win);
             resultStick.push(text);
             gameRecord.rowRecords = resultStick;
 
-            resultStick = [];
-            tempResult = [];
-            rowData = [];
-            drawTimes = 0;
-            winningTimes = 0;
-            console.log(apiRes)
-            console.log(`|========SEMSALM========|${gameResult}`)
-            console.log(gameRecord)
-            await create(gameRecord)
-           return getResult(apiRes,"WINNER",gameRecord)
+            resultStick = [],tempResult = [],rowData = [],drawTimes = 0,winningTimes = 0;
+
+            // console.log(apiRes);
+            console.log(`|========SEMSALM====finalWinner====|${gameResult}`)
+            const game = await create(gameRecord)
+            console.log(game)
+            let data = {}
+            data = gameRecord;
+            gameRecord = {}
+           return successResponse(apiRes,HttpCodes.OK,"WINNER",game)
         }
     }
 

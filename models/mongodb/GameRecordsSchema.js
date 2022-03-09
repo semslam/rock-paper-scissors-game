@@ -14,8 +14,7 @@ const ObjectId = Schema.ObjectId;
 //     });
 
 const GameRecordsSchema = new Schema({
-    clientId: { type:String, required: true},
-    username:{ type:String, required: true},
+    userId: { type:String, required: true},
     gameMode:{ type:String, required: false,enum:['console','api']},
     gameType:{ type:String, required: false,enum:["humanVsComputer","computerVsComputer"]},
     isWin:{ type:Boolean, default: false},
@@ -38,7 +37,7 @@ const GameRecordsSchema = new Schema({
             playerOneScores:{ type:Number, default: 0},
             playerTwo:{ type:String, required: true},
             playerTwoMove:{ type:String, required: true,enum:["rock","paper","scissors"]},
-            playerOneScores:{ type:Number, default: 0}
+            playerTwoScores:{ type:Number, default: 0}
             }
     ],
     rowRecords:[String],

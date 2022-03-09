@@ -1,13 +1,13 @@
 import { graphqlHTTP } from "express-graphql";
-import actorAccountManagement from "../services/ActorAccountManagement.js"
+import gameManager from "../services/GameManager.js"
 import gameSchema from "../models/graphqlQueries/GameRecordsBuildSchema.js"
 import { buildSchema } from "graphql";
 
 export default (router) => {
 const root = { 
-    gameRecords: ({clientId})=>{ 
-        let rec =  actorAccountManagement.fetchGameRecords();
-        rec.filter(records => records.clientId === clientId);
+    gameRecords: async ({userId})=>{ 
+        let rec = await  gameManager.fetchGameRecords({userId});
+        // rec.filter(records => records.userId === userId);
       
       console.log(rec);
       return rec;
