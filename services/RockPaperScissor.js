@@ -9,22 +9,9 @@ import sleep from "../libraries/sleep.js";
  
 
 // print type list
-const [ 
-TEMP_TIED, 
-PERM_TIED, 
-CURR_SCORE, 
-WINNER 
-] = printOutType;
+const [TEMP_TIED,PERM_TIED,CURR_SCORE,WINNER ] = printOutType;
 // repeated values
-const [
-ROCK,
-PAPER,
-SCISSORS,
-COMPUTER,
-TIED,
-HUMAN_VS_COMPUTER,
-COMPUTER_VS_COMPUTER,
-] = repeatedValues;
+const [ROCK,PAPER,SCISSORS,COMPUTER,TIED,HUMAN_VS_COMPUTER,COMPUTER_VS_COMPUTER,] = repeatedValues;
 const [CONSOLE,API, CONSOLE_AND_API] = isConsoleOrApi;
 class RockPaperScissor{
   // * a user can pick either paper, scissors, or rock as a choice.

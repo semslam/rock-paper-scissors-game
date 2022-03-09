@@ -1,8 +1,9 @@
 import mongoose from "mongoose";
+import "dotenv/config";
 
 const connectDB = async () => {
     try {
-        await mongoose.connect("mongodb://localhost:27017/rockPaperScissors", {   
+        await mongoose.connect(process.env.DATABASE_CONFIG, {   
         maxPoolSize: 50,
         wtimeoutMS: 2500,
         useNewUrlParser: true

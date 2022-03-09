@@ -16,6 +16,8 @@ const repeatedValues = [
     ];
 
 const isConsoleOrApi = ["console","api"]
+const resType = {draw:"Draw",win:"Win"}
+const gender = {MALE:"Male",FEMALE:"Female"}
 
 const ErrorCodes = {
         LOCKING_ERROR: 102,
@@ -63,5 +65,7 @@ export {
     repeatedValues,
     isConsoleOrApi,
     ErrorCodes,
-    HttpCodes
+    HttpCodes,
+    resType,
+    gender
 }

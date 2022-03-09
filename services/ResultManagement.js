@@ -1,31 +1,17 @@
 import chalk from "chalk";
 import { createSpinner } from "nanospinner";
 import GameComponents from "./GameComponents.js";
-import {repeatedValues, printOutType,isConsoleOrApi} from "../libraries/sustainedValues.js";
-import {getResult} from "../response/Princenter.js"
+import {repeatedValues, printOutType,isConsoleOrApi, resType} from "../libraries/sustainedValues.js";
 import sleep from "../libraries/sleep.js";
-import {create,update,findOne,find} from "../repositories/GameRep.js";
+import {create} from "../repositories/GameRep.js";
 import {decryptToken} from "../libraries/encryptAndDecrypt.js";
 import {successResponse,errorResponse} from "../response/apiResponse.js";
 import {HttpCodes} from "../libraries/sustainedValues.js"
 
-const [
-    ROCK,
-    PAPER,
-    SCISSORS,
-    COMPUTER,
-    TIED,
-    HUMAN_VS_COMPUTER,
-    COMPUTER_VS_COMPUTER] = repeatedValues;
-    const [ 
-        TEMP_TIED, 
-        PERM_TIED, 
-        CURR_SCORE, 
-        WINNER 
-        ] = printOutType;
-    const [CONSOLE,API] = isConsoleOrApi; 
-    
-   const resType = {draw:"Draw",win:"Win"}
+const [ROCK,PAPER,SCISSORS,COMPUTER,TIED,HUMAN_VS_COMPUTER,COMPUTER_VS_COMPUTER] = repeatedValues;
+const [TEMP_TIED, PERM_TIED,CURR_SCORE, WINNER ] = printOutType;
+const [CONSOLE,API] = isConsoleOrApi;  
+const {draw,win} = resType;
 
 const gameComponents = new GameComponents();
 let gameRecord = {}
@@ -33,7 +19,15 @@ let gameRecord = {}
 let rowData = []
 let drawTimes =0
 let winningTimes = 0;
+let resultStick = [];
+let tempResult = [];
 
+
+/**
+ * compiling the game row Result
+ * @param {Object} records 
+ * @param {String} resultType 
+ */
  const compilingResult = (records,resultType)=>{
     
     rowData.push({ 
@@ -47,7 +41,11 @@ let winningTimes = 0;
     gameRecord.playingHistory = rowData;
      
  }
-
+/**
+ * Compile final game result
+ * @param {Object} records 
+ * @param {String} userToken 
+ */
  const finalCompile = async (records,userToken)=>{
     const uniqId = async (token)=> {return await decryptToken(token);}
     const token = await uniqId(userToken);
@@ -68,8 +66,6 @@ let winningTimes = 0;
     }
  }
 
-let resultStick = [];
-let tempResult = [];
 /**
  * print out console base result
  * @param {Object} type 
@@ -134,7 +130,7 @@ let temporaryTied = async (properties,apiRes)=>{
          drawTimes += 1
         resultStick.push(text);
         tempResult.push(text);
-        compilingResult(properties,resType.draw);
+        compilingResult(properties,draw);
         console.log(`|========SEMSALM====temporaryTied====|${gameResult}`);
         console.log(properties);
         if(gameOption === HUMAN_VS_COMPUTER){
@@ -156,7 +152,7 @@ let temporaryTied = async (properties,apiRes)=>{
             await finalCompile(properties,token)
             gameRecord.isWin = false;
             gameRecord.winner = "N/A";
-            compilingResult(properties,resType.draw);
+            compilingResult(properties,draw);
             resultStick.push(text);
             gameRecord.rowRecords = resultStick;
 
@@ -168,8 +164,6 @@ let temporaryTied = async (properties,apiRes)=>{
             // insert the result in database
             const game = await create(gameRecord);
             console.log(game)
-            let data = {}
-            data = gameRecord;
             gameRecord = {}
            return await successResponse(apiRes,HttpCodes.OK,"TIED",game);
         }
@@ -184,7 +178,7 @@ let temporaryTied = async (properties,apiRes)=>{
         else{
           
             winningTimes +=1;
-            compilingResult(properties,resType.win);
+            compilingResult(properties,win);
             resultStick.push(text);
             tempResult.push(text);
             console.log(`|========SEMSALM=====currentScore===|${gameResult}`)
@@ -205,7 +199,7 @@ let temporaryTied = async (properties,apiRes)=>{
             gameRecord.winner = gameResult;
             winningTimes +=1;
             await finalCompile(properties,token);
-            compilingResult(properties,resType.win);
+            compilingResult(properties,win);
             resultStick.push(text);
             gameRecord.rowRecords = resultStick;
 
@@ -214,9 +208,6 @@ let temporaryTied = async (properties,apiRes)=>{
             // console.log(apiRes);
             console.log(`|========SEMSALM====finalWinner====|${gameResult}`)
             const game = await create(gameRecord)
-            console.log(game)
-            let data = {}
-            data = gameRecord;
             gameRecord = {}
            return successResponse(apiRes,HttpCodes.OK,"WINNER",game)
         }
