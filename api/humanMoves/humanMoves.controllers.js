@@ -11,10 +11,7 @@ const rockPaperScissor = new RockPaperScissor("api");
 let gameOptionsAndMoves = {};
 
 const provideGameOption = async (req, res)=>{
-//computer or human
-// choose game round
-// playerName
-// console.log(res)
+
 gameOptionsAndMoves = {};
 gameOptionsAndMoves.token = auth.getToken(req,res);
 gameOptionsAndMoves.gameRound = req.body.gameRound;
@@ -23,7 +20,6 @@ gameOptionsAndMoves.playingMode = req.body.playersType;
 // if computer and computer no need to provide a name and moves
 let response = {message:`You have chosen ${gameOptionsAndMoves.playingMode} as playerTypes, You are playing ${req.body.gameRound} round`};
     if(req.body.playersType === "humanVsComputer"){
-        response.nextRequest = "Please provide the player name";
         rockPaperScissor.gameStatus = false;
         successResponse(res,HttpCodes.OK,"Please provide the player name",response);
     }else{

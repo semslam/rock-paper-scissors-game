@@ -1,12 +1,14 @@
 import Joi from 'joi';
 import {payloadValidateErrorResponse} from "../../response/apiResponse.js";
+import {gender} from "../../libraries/sustainedValues.js";
+const {MALE,FEMALE} = gender;
 
 
 const onBoardValidation = data =>{
     const schema = Joi.object({
         username: Joi.string().email().required(),
         password:Joi.string().min(7).max(30).required(),
-        gender:Joi.string().valid("Male","Female")
+        gender:Joi.string().valid(MALE,FEMALE)
       });
       return schema.validate(data);
 }

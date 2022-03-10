@@ -210,6 +210,10 @@ class RockPaperScissor{
     await sleep(500)
     this.consoleWelcome(true);
   }
+
+ sum(a, b) {
+    return a + b;
+  }
 }
 
 export default RockPaperScissor;

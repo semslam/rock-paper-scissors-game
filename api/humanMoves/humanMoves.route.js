@@ -6,7 +6,7 @@ export default (router) => {
     
     // accept game options request
     router.post('/game_options/',auth.authenticateToken, playingValidateReq,humanMoves.provideGameOption);
-    //
+    // accept the player name request
     router.post('/player_name/',auth.authenticateToken, playerNameValidateReq,humanMoves.providePlayerName);
     // accept the player mover request
     router.post('/game_move/',auth.authenticateToken, playerMoveValidateReq,humanMoves.gameMove);
