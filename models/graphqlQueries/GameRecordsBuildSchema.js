@@ -1,4 +1,4 @@
-import { buildSchema } from "graphql";
+const { buildSchema } = require("graphql");
 
 const user = `
 type User {
@@ -74,5 +74,5 @@ const gameSchema = buildSchema(`
 //   }
 // `);
 
-export default gameSchema;
+module.exports = gameSchema;
 

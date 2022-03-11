@@ -1,5 +1,7 @@
-import mongoose from "mongoose";
-import "dotenv/config";
+// import { createRequire } from "module";
+// const require = createRequire(import.meta.url);
+const mongoose = require("mongoose");
+require("dotenv/config");
 
 const connectDB = async () => {
     try {
@@ -20,4 +22,4 @@ mongoose.connection.on('disconnecting', () => console.info('database disconnecti
 mongoose.connection.on('disconnected', () => console.info('database disconnected'));
 mongoose.connection.on('error', () => console.error('database error'));
 
-export default connectDB
+module.exports = connectDB

@@ -1,6 +1,6 @@
-import mongoose from "mongoose";
-import "dotenv/config";
-import {repeatedValues,isConsoleOrApi, resType} from "../../libraries/sustainedValues.js"
+const mongoose = require("mongoose");
+require("dotenv/config");
+const {repeatedValues,isConsoleOrApi, resType} = require("../../libraries/sustainedValues");
 const [ROCK,PAPER,SCISSORS,COMPUTER,TIED,HUMAN_VS_COMPUTER,COMPUTER_VS_COMPUTER] = repeatedValues;
 const [CONSOLE,API] = isConsoleOrApi;  
 const {draw,win} = resType;
@@ -42,4 +42,4 @@ const GameRecordsSchema = new Schema({
     updateAt:{ type: Date}
 });
 
-export default mongoose.model(process.env.GAME_RECORDS_COLLECTION, GameRecordsSchema);
+module.exports = mongoose.model(process.env.GAME_RECORDS_COLLECTION, GameRecordsSchema);

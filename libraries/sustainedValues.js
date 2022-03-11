@@ -60,7 +60,7 @@ const ErrorCodes = {
         NOTACCEPTABLE: 406
       };
 
-export {
+module.exports ={
     printOutType,
     repeatedValues,
     isConsoleOrApi,

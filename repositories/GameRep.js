@@ -1,4 +1,4 @@
-import GameRecord from "../models/mongodb/GameRecordsSchema.js"
+const GameRecord = require("../models/mongodb/GameRecordsSchema");
 
 
 const create = async (query) =>{
@@ -48,7 +48,7 @@ const find = async (query) =>{
    
 }
 
-export {
+module.exports ={
     create,
     update,
     findOne,

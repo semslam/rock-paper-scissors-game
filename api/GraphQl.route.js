@@ -1,9 +1,9 @@
-import { graphqlHTTP } from "express-graphql";
-import gameManager from "../services/GameManager.js"
-import gameSchema from "../models/graphqlQueries/GameRecordsBuildSchema.js"
-import { buildSchema } from "graphql";
+const { graphqlHTTP } = require("express-graphql");
+const gameManager = require("../services/GameManager");
+const gameSchema = require("../models/graphqlQueries/GameRecordsBuildSchema");
+const { buildSchema } = require("graphql");
 
-export default (router) => {
+module.exports = (router) => {
 const root = { 
     gameRecords: async ({userId})=>{ 
         let rec = await  gameManager.fetchGameRecords({userId});

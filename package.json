@@ -3,11 +3,10 @@
   "version": "1.0.0",
   "description": "A console-based rock-paper-scissors game is played by two players, one human and one computer.",
   "main": "server.js",
-  "type": "module",
   "scripts": {
-    "dev": "nodemon --experimental-modules --es-module-specifier-resolution=node server",
-    "start": "node --experimental-modules --es-module-specifier-resolution=node cli/index.js",
-    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
+    "dev": "nodemon server",
+    "start": "node cli/index.js",
+    "test": "jest --watchAll --detectOpenHandles"
   },
   "repository": {
     "type": "git",
@@ -23,6 +22,7 @@
     "bcrypt": "^5.0.1",
     "chalk": "^5.0.0",
     "chalk-animation": "^1.6.0",
+    "colors": "^1.4.0",
     "cors": "^2.8.5",
     "crypto-js": "^4.1.1",
     "dotenv": "^16.0.0",
@@ -39,6 +39,8 @@
     "nodemon": "^2.0.15"
   },
   "devDependencies": {
-    "jest": "^27.5.1"
+    "jest": "^27.5.1",
+    "mongodb-memory-server": "^8.4.0",
+    "supertest": "^6.2.2"
   }
 }

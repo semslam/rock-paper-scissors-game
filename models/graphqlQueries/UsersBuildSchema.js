@@ -1,4 +1,4 @@
-import { buildSchema } from "graphql";
+const { buildSchema } = require("graphql");
 const userSchema = buildSchema(`
   type Query {
     id: String
@@ -9,4 +9,4 @@ const userSchema = buildSchema(`
 `);
 
 
-export default userSchema
+module.exports = userSchema

@@ -1,11 +1,11 @@
 
-import GameComponents from "./GameComponents.js";
-import ConsoleMode from "../cli/ConsoleMode.js";
-import resultManagement from "./ResultManagement.js";
-import {printOutType, repeatedValues,isConsoleOrApi} from "../libraries/sustainedValues.js";
-import {ErrorCodes} from "../libraries/sustainedValues.js";
-import {errorResponse} from "../response/apiResponse.js";
-import sleep from "../libraries/sleep.js";
+const GameComponents = require("./GameComponents");
+const ConsoleMode = require("../cli/ConsoleMode");
+const resultManagement = require("./ResultManagement");
+const {printOutType, repeatedValues,isConsoleOrApi} = require( "../libraries/sustainedValues");
+const  {ErrorCodes} = require("../libraries/sustainedValues");
+const {errorResponse} = require("../response/apiResponse");
+const sleep = require("../libraries/sleep");
  
 
 // print type list
@@ -149,12 +149,13 @@ class RockPaperScissor{
      * @param {String} gameResult 
      */
   printOutOptions = async (gameOption,playerName,computerMove,playerMove,printType,gameResult = "", apiRes = null) => {
-    
-    let properties = {gameResult,playerName,moves:{playerMove,computerMove},scores:{playerScore:this.playerScore,computerScore:this.computerScore},gameMode:this.gameMode,gameOption,token:this.token}
+    let properties ={};
+     properties = {gameResult,playerName,moves:{playerMove,computerMove},scores:{playerScore:this.playerScore,computerScore:this.computerScore},gameMode:this.gameMode,gameOption,token:this.token}
     
     switch (printType) {
         case TEMP_TIED:
             properties.tieCount = this.tieCount;
+            console.log(properties)
           this.tieCount++;
           if(this.gameMode === CONSOLE){
             await resultManagement.temporaryTied(properties)
@@ -211,9 +212,6 @@ class RockPaperScissor{
     this.consoleWelcome(true);
   }
 
- sum(a, b) {
-    return a + b;
-  }
 }
 
-export default RockPaperScissor;
+module.exports = RockPaperScissor;

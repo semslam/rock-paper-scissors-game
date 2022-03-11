@@ -1,11 +1,10 @@
-
-import chalk from "chalk";
-import inquirer from "inquirer";
-import gradient from "gradient-string";
-import chalkAnimation from "chalk-animation";
-import figlet from "figlet";
-import { repeatedValues} from "../libraries/sustainedValues.js";
-import sleep from "../libraries/sleep.js";
+const colors = require('colors');
+const inquirer = require("inquirer");
+const gradient = require("gradient-string");
+const chalkAnimation = require("chalk-animation");
+const figlet = require("figlet");
+const { repeatedValues} = require("../libraries/sustainedValues");
+const sleep = require("../libraries/sleep");
 
 const [
     ROCK,
@@ -37,18 +36,16 @@ class ConsoleMode{
         rainbowTitle.stop();
 
         this.log(`
-            ${chalk.bgBlue("HOW TO PLAY")}
+            ${colors.blue( "HOW TO PLAY")}
 
-            1. Press Y -> continue,  n or any other key press -> ${chalk.bgRed(
-                "exit the game"
-            )}.
+            1. Press Y -> continue,  n or any other key press -> ${colors.red("exit the game")}.
             2. Choose a game mode: Human vs Computer or Computer vs Computer
             3. Choose a game round: Play only once or Play three times
             4. Next, input the player's name.
             5. On three times play, the first player to win twice is declared the winner
             6. A tie with 50 rounds is a tie for life.
             
-            ${chalk.green("CONTINUE THE GAME PROCESS")} 
+            ${colors.blue("CONTINUE THE GAME PROCESS")} 
             `);
     };
 
@@ -62,7 +59,7 @@ class ConsoleMode{
       message: "Would you want to start a new game?",
     });
     if (!answer.newGame) {
-      this.log(`${chalk.red("******* GAME END! ********")}`);
+      this.log(`${colors.red("******* GAME END! ********")}`);
       process.exit();
     }
     if (isClean) this.clear();
@@ -148,4 +145,4 @@ class ConsoleMode{
 
 }
 
-export default ConsoleMode;
+module.exports = ConsoleMode;

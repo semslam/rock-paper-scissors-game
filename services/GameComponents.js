@@ -1,4 +1,4 @@
-import {repeatedValues} from "../libraries/sustainedValues.js";
+const {repeatedValues} = require("../libraries/sustainedValues");
 
 const [
     ROCK,
@@ -45,8 +45,8 @@ class GameComponents {
             winner = computerMove === ROCK ? COMPUTER : playerName;
             break;
         default:
-            console.log(`Wrong parameter pass in analyticalEngine ${playerMove}`)
-            process.exit();
+            console.log(`Wrong parameter pass in analyticalEngine`);
+            throw new Error(`Wrong parameter pass in analyticalEngine`);
         }
 
         return new Promise((resolve, reject) => {
@@ -68,9 +68,10 @@ class GameComponents {
         case SCISSORS:
             return "✌️";
         default:
-            console.log("Wrong parameter pass");
+            console.log("Wrong parameter pass in chooseEmojiMove");
+            throw new Error(`Wrong parameter pass in chooseEmojiMove`);
         }
     };
 }
 
-export default GameComponents;
+module.exports  =GameComponents;

@@ -1,8 +1,8 @@
-import humanMoves from "./humanMoves.controllers.js";
-import {playingValidateReq,playerNameValidateReq,playerMoveValidateReq} from "./humanMoves.validator.js";
-import auth from "../../middleware/jsonwebtokenAuthentication.js"
+const humanMoves = require("./humanMoves.controllers");
+const {playingValidateReq,playerNameValidateReq,playerMoveValidateReq} = require("./humanMoves.validator");
+const auth = require("../../middleware/jsonwebtokenAuthentication");
 
-export default (router) => {
+module.exports = (router) => {
     
     // accept game options request
     router.post('/game_options/',auth.authenticateToken, playingValidateReq,humanMoves.provideGameOption);

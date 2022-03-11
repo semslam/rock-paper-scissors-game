@@ -1,4 +1,4 @@
-import {convertDateToTimeStamp} from "../libraries/DateFormat.js";
+const {convertDateToTimeStamp} = require("../libraries/DateFormat");
 const STATUS_FAILED = "Failed";
 const STATUS_SUCCESS = "Successful";
 const timestamp = convertDateToTimeStamp(new Date());
@@ -41,7 +41,7 @@ const payloadValidateErrorResponse = (res,next,error) =>{
 }
 
 
- export {
+ module.exports = {
     successResponse,
     errorResponse,
     payloadValidateErrorResponse

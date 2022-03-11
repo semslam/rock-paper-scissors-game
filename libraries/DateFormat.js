@@ -9,7 +9,7 @@
     return new Date(milliseconds);
   }
 
- export {
+ module.exports ={
     convertDateToTimeStamp,
     convertTimeStampToDate
   }

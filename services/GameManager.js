@@ -1,5 +1,5 @@
 
-import {create,update,findOne,find} from "../repositories/GameRep.js"
+const {create,update,findOne,find} = require("../repositories/GameRep")
 
 const fetchGameRecords = async (query)=>{
     return await find(query);
@@ -7,6 +7,6 @@ const fetchGameRecords = async (query)=>{
 
 
 
-export default {
+module.exports = {
     fetchGameRecords
 }

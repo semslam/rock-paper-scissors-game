@@ -1,6 +1,6 @@
-import Joi from 'joi';
-import {payloadValidateErrorResponse} from "../../response/apiResponse.js";
-import {gender} from "../../libraries/sustainedValues.js";
+const Joi = require("joi");
+const {payloadValidateErrorResponse} = require("../../response/apiResponse");
+const {gender} = require("../../libraries/sustainedValues");
 const {MALE,FEMALE} = gender;
 
 
@@ -32,7 +32,7 @@ const loginValidateReq = (req,res,next) =>{
     payloadValidateErrorResponse(res,next,error); 
 }
 
-export {
+module.exports = {
     onBoardValidateReq,
     loginValidateReq
 }

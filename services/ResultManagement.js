@@ -1,12 +1,12 @@
-import chalk from "chalk";
-import { createSpinner } from "nanospinner";
-import GameComponents from "./GameComponents.js";
-import {repeatedValues, printOutType,isConsoleOrApi, resType} from "../libraries/sustainedValues.js";
-import sleep from "../libraries/sleep.js";
-import {create} from "../repositories/GameRep.js";
-import {decryptToken} from "../libraries/encryptAndDecrypt.js";
-import {successResponse,errorResponse} from "../response/apiResponse.js";
-import {HttpCodes} from "../libraries/sustainedValues.js"
+const colors = require('colors');
+const { createSpinner } = require("nanospinner");
+const GameComponents = require("./GameComponents");
+const {repeatedValues, printOutType,isConsoleOrApi, resType} = require("../libraries/sustainedValues");
+const sleep = require("../libraries/sleep");
+const {create} = require("../repositories/GameRep");
+const {decryptToken} = require("../libraries/encryptAndDecrypt");
+const {successResponse,errorResponse} = require("../response/apiResponse");
+const {HttpCodes} = require("../libraries/sustainedValues");
 
 const [ROCK,PAPER,SCISSORS,COMPUTER,TIED,HUMAN_VS_COMPUTER,COMPUTER_VS_COMPUTER] = repeatedValues;
 const [TEMP_TIED, PERM_TIED,CURR_SCORE, WINNER ] = printOutType;
@@ -14,6 +14,7 @@ const [CONSOLE,API] = isConsoleOrApi;
 const {draw,win} = resType;
 
 const gameComponents = new GameComponents();
+const log = console.log;
 let gameRecord = {}
 
 let rowData = []
@@ -90,7 +91,7 @@ let spinSleepAndPrint = async (type,text)=>{
             break;        
         default:
             console.log('Wrong parameter pass in spinSleepAndPrint')
-            break;
+            throw new Error('Wrong parameter pass in spinSleepAndPrint');
     }
     
    
@@ -112,7 +113,7 @@ let spinSleepAndPrint = async (type,text)=>{
          pickEmojiExpression(gameResult,playerName)
        }  ${gameComponents.chooseEmojiMove(moves.playerMove)}(${moves.playerMove}) ${
         scores.playerScore
-       } VS (${scores.computerScore}) ${moves.computerMove} ${gameComponents.chooseEmojiMove(
+       } VS ${scores.computerScore} (${moves.computerMove}) ${gameComponents.chooseEmojiMove(
         moves.computerMove
        )} ${
          pickEmojiExpression(gameResult,COMPUTER)
@@ -122,8 +123,8 @@ let spinSleepAndPrint = async (type,text)=>{
 let temporaryTied = async (properties,apiRes)=>{
     const {gameResult,playerName,moves,scores,tieCount,gameMode,gameOption} = properties;
     let commonText = commonTextDisplay(gameResult,playerName,moves,scores);
-    let text = `The game is tied, ${commonText}, tie count ${tieCount}. ${gameMode === CONSOLE? chalk.green("Continue playing the game"): "Continue playing the game"}`;
-
+    let text = `The game is tied, ${commonText}, tie count ${tieCount}. ${gameMode === CONSOLE? colors.green("Continue playing the game"): "Continue playing the game"}`;
+    
     if(gameMode === CONSOLE){
         await spinSleepAndPrint(TEMP_TIED,text);
     }else{
@@ -143,7 +144,7 @@ let temporaryTied = async (properties,apiRes)=>{
         const {gameResult,playerName,moves,scores,tieCount,gameMode,gameOption,token} = properties;
         let commonText = commonTextDisplay(gameResult,playerName,moves,scores);
         let path = ` 🙅‍♂️ continuing tie after ${tieCount} rounds of play, which is now officially tied`;
-        let text = `The game sponsored by ${commonText},${gameMode === CONSOLE? chalk.red(path): path}`;
+        let text = `The game sponsored by ${commonText},${gameMode === CONSOLE? colors.red(path): path}`;
         if(gameMode === CONSOLE)
         await spinSleepAndPrint(PERM_TIED,text);
         else{
@@ -172,7 +173,7 @@ let temporaryTied = async (properties,apiRes)=>{
    let currentScore = async (properties,apiRes) =>{
         const {gameResult,playerName,moves,scores,gameMode,gameRound,gameOption} = properties;
         let commonText = commonTextDisplay(gameResult,playerName,moves,scores);
-        let text = `Current score..., ** round ${4 - gameRound } ** ${commonText}, ${gameMode === CONSOLE? chalk.green("Play again"):"Play again"}`;
+        let text = `Current score..., ** round ${4 - gameRound } ** ${commonText}, ${gameMode === CONSOLE? colors.green("Play again"):"Play again"}`;
         if(gameMode === CONSOLE)
           await spinSleepAndPrint(CURR_SCORE,text);
         else{
@@ -215,7 +216,7 @@ let temporaryTied = async (properties,apiRes)=>{
 
 
 
-export default {
+module.exports  ={
     temporaryTied,
     permanentTied,
     currentScore,

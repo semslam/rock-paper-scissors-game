@@ -1,6 +1,6 @@
-import Joi from 'joi';
-import {payloadValidateErrorResponse} from "../../response/apiResponse.js";
-import {repeatedValues} from "../../libraries/sustainedValues.js";
+const Joi = require("joi");
+const {payloadValidateErrorResponse} = require("../../response/apiResponse");
+const {repeatedValues} = require("../../libraries/sustainedValues");
     const [ROCK,PAPER,SCISSORS,COMPUTER,TIED,HUMAN_VS_COMPUTER,COMPUTER_VS_COMPUTER] = repeatedValues;
 
 
@@ -42,7 +42,7 @@ const playerMoveValidateReq = (req,res,next) =>{
     payloadValidateErrorResponse(res,next,error); 
 }
 
-export {
+module.exports ={
     playingValidateReq,
     playerNameValidateReq,
     playerMoveValidateReq

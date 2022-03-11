@@ -1,9 +1,9 @@
 // 'use strict';
-import RockPaperScissor from "../../services/RockPaperScissor.js";
-import {successResponse,errorResponse} from "../../response/apiResponse.js";
-import {HttpCodes} from "../../libraries/sustainedValues.js";
-import {isEmpty,isObjEmpty,isNotEmpty,existProperty,isNumber,isBoolean,isString,isNullOrUndefinedType,isArray,isTrue,isFalse,isNull,hasValue} from "../../libraries/Validator.js"
-import auth from "../../middleware/jsonwebtokenAuthentication.js";
+const RockPaperScissor = require("../../services/RockPaperScissor");
+const {successResponse,errorResponse} = require("../../response/apiResponse");
+const {HttpCodes} = require("../../libraries/sustainedValues");
+const {isEmpty,isObjEmpty,isNotEmpty,existProperty,isNumber,isBoolean,isString,isNullOrUndefinedType,isArray,isTrue,isFalse,isNull,hasValue} = require("../../libraries/Validator")
+const auth = require("../../middleware/jsonwebtokenAuthentication");
 
 
 const rockPaperScissor = new RockPaperScissor("api");
@@ -59,7 +59,7 @@ const gameMove = (req, res)=>{
 }
 
 
-export default {
+module.exports = {
     provideGameOption,
     gameMove,
     providePlayerName

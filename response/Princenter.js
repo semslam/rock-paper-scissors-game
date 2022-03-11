@@ -1,5 +1,5 @@
-import {successResponse,errorResponse} from "./apiResponse.js";
-import {HttpCodes} from "../libraries/sustainedValues.js"
+const {successResponse,errorResponse} = require("./apiResponse");
+const {HttpCodes} = require("../libraries/sustainedValues")
 const getResult = (ctx,megs,data)=>{
     // ctx.json({megs, data});
     // ctx.status(200).send({megs, data})
@@ -9,7 +9,7 @@ const errorResult = (ctx,megs)=>{
     errorResponse(ctx,HttpCodes.NOTACCEPTABLE,megs)
 }
 
-export {
+module.exports ={
     getResult,
     errorResult
 }

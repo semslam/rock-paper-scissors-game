@@ -151,7 +151,7 @@ const isNumber = (value) => {
 };
 
 
-export {
+module.exports ={
   isEmpty,
   isObjEmpty,
   isNotEmpty,

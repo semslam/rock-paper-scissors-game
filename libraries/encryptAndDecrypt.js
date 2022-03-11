@@ -1,7 +1,7 @@
-import bcrypt from "bcrypt";
-import CryptoJS from "crypto-js";
-import jwt from "jsonwebtoken";
-import "dotenv/config";
+const bcrypt = require("bcrypt");
+const CryptoJS = require("crypto-js");
+const jwt = require("jsonwebtoken");
+require("dotenv/config");
 
 
 const sha512Encrypt = (data, secretKey)=> {
@@ -49,7 +49,7 @@ const isPasswordMatch = async (clientPassword,hashedPassword)=>{
     }
 }
 
-export {
+module.exports = {
     hashPassword,
     isPasswordMatch,
     sha512Encrypt,

@@ -1,4 +1,4 @@
-import userSchema from "../models/mongodb/UserSchema.js"
+const userSchema = require("../models/mongodb/UserSchema");
 
 
 const create = async (query) =>{
@@ -51,7 +51,7 @@ const find = async (query) =>{
    
 }
 
- export {
+ module.exports = {
     create,
     update,
     findOne,

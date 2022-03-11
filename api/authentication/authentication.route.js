@@ -1,6 +1,6 @@
-import authentication from "./authentication.controllers.js";
-import {onBoardValidateReq,loginValidateReq} from "./authentication.validator.js"
-export default (router) => {
+const authentication = require("./authentication.controllers");
+const {onBoardValidateReq,loginValidateReq} = require("./authentication.validator");
+module.exports = (router) => {
   
     router.post('/onboard/',onBoardValidateReq,authentication.onboarding);
     

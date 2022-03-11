@@ -1,9 +1,9 @@
 
-import {successResponse,errorResponse} from "../response/apiResponse.js";
-import {hashPassword, isPasswordMatch} from "../libraries/encryptAndDecrypt.js";
-import {create,update,findOne,find} from "../repositories/UserRep.js"
-import {generateAccessToken} from "../libraries/encryptAndDecrypt.js"
-import {ErrorCodes,HttpCodes} from "../libraries/sustainedValues.js";
+const {successResponse,errorResponse} = require("../response/apiResponse");
+const {hashPassword, isPasswordMatch} = require("../libraries/encryptAndDecrypt");
+const {create,update,findOne,find} = require( "../repositories/UserRep");
+const {generateAccessToken} = require("../libraries/encryptAndDecrypt");
+const {ErrorCodes,HttpCodes} = require("../libraries/sustainedValues");
 
 
 const userOnboardProcess = async (req,res)=>{
@@ -40,7 +40,7 @@ const loginProcess = async (req,res)=>{
 
 
 
-export default {
+module.exports = {
     userOnboardProcess,
     loginProcess
 }

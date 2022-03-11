@@ -1,4 +1,4 @@
-import actorAccountManagement from "../../services/ActorAccountManagement.js";
+const actorAccountManagement = require("../../services/ActorAccountManagement");
 
 const onboarding = async (req, res)=>{
     await actorAccountManagement.userOnboardProcess(req.body,res);
@@ -10,7 +10,7 @@ const login = async (req,res)=>{
 
 
 
-export default {
+module.exports = {
     onboarding,
     login
 }

@@ -1,8 +1,11 @@
-import express from "express";
-import cors from "cors";
-import passer from "./api/routes.js";
-import connectDB from "./models/mongodb/config.js";
-
+// import { createRequire } from "module";
+// const require = createRequire(import.meta.url);
+const express = require("express");
+const cors = require("cors");
+// const passer = require("./api/routes");
+const connectDB = require("./models/mongodb/config");
+// Connect to MongoDB
+connectDB()
 const app = express();
 
 const corsOptions = {
@@ -11,15 +14,13 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-// Connect to MongoDB
-connectDB()
+
 
 // parse requests of content-type - application/json
 app.use(express.json());  /* bodyParser.json() is deprecated */
 
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));   /* bodyParser.urlencoded() is deprecated */
-
 // simple route
 app.get("/", (req, res) => {
   res.json({ message: "Welcome to Welcome to rock paper scissors game" });
@@ -30,7 +31,8 @@ app.get("/", (req, res) => {
 // });
 
 
-passer(app);
+// passer(app);
+require("./api/routes")(app)
 
 
 app.all('*', (req, res) => {

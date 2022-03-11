@@ -1,8 +1,8 @@
-import jwt from "jsonwebtoken";
-import {successResponse,errorResponse} from "../response/apiResponse.js";
-import "dotenv/config";
-import {ErrorCodes} from "../libraries/sustainedValues.js"
-import {findOne} from "../repositories/UserRep.js"
+const jwt = require("jsonwebtoken");
+const {successResponse,errorResponse} = require("../response/apiResponse");
+require("dotenv/config");
+const {ErrorCodes} = require("../libraries/sustainedValues");
+const {findOne} = require("../repositories/UserRep")
 
 const  authenticateToken = (req, res, next)=> {
     const token = getToken(req, res);
@@ -25,4 +25,4 @@ const  authenticateToken = (req, res, next)=> {
     return token;
   }
 
-  export default {authenticateToken,getToken}
+  module.exports = {authenticateToken,getToken}

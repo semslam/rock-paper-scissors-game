@@ -1,6 +1,6 @@
-import mongoose from "mongoose";
-import "dotenv/config";
-import {gender} from "../../libraries/sustainedValues.js";
+const mongoose = require("mongoose");
+require("dotenv/config");
+const {gender} = require("../../libraries/sustainedValues");
 const {MALE,FEMALE} = gender;
 const Schema = mongoose.Schema;
 
@@ -15,4 +15,4 @@ const UserSchema = new Schema({
     updateAt:{ type: Date}
 });
 
-export default mongoose.model(process.env.USERS_COLLECTION, UserSchema);
+module.exports = mongoose.model(process.env.USERS_COLLECTION, UserSchema);
