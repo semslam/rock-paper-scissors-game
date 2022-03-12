@@ -1,12 +1,6 @@
 const {repeatedValues} = require("../libraries/sustainedValues");
 
-const [
-    ROCK,
-    PAPER,
-    SCISSORS,
-    COMPUTER,
-    TIED,
-    ...values] = repeatedValues;
+const [ROCK,PAPER,SCISSORS,COMPUTER,TIED,...values] = repeatedValues;
 
 class GameComponents {
 

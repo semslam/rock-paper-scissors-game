@@ -21,7 +21,7 @@ const userOnboardProcess = async (req,res)=>{
 
 const loginProcess = async (req,res)=>{
     try {
-        console.log(req);
+        // console.log(req);
         const  user = await findOne({username:req.username});
          const passer = await isPasswordMatch(req.password,user.password);
          if(!passer){

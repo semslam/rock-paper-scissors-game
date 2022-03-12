@@ -29,7 +29,6 @@ const userRoot = {
       return fetchSingleUserRecord(removeUndefineInObj({_id}));
     },
     getUsers: async ({_id,username,gender})=>{ 
-        console.log({_id,username,gender});
       return fetchUserReport(removeUndefineInObj({_id,username,gender}));
     }
 }

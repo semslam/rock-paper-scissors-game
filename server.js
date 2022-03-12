@@ -25,14 +25,7 @@ app.get("/", (req, res) => {
   res.json({ message: "Welcome to Welcome to rock paper scissors game" });
 });
 
-// app.post("/", (req, res) => {
-//   res.json({ message:req.body});
-// });
-
-
-// passer(app);
 require("./api/routes")(app)
-
 
 app.all('*', (req, res) => {
   res.status(404).send({

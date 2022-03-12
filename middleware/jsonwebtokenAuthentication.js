@@ -6,8 +6,7 @@ const {findOne} = require("../repositories/UserRep")
 
 const  authenticateToken = (req, res, next)=> {
     const token = getToken(req, res);
-    console.log("User token===============>");
-    console.log(token);
+   
     //fetch user access token secret from database
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, user) => {
       if(err) return errorResponse(res,ErrorCodes.FORBIDDEN, err.message || "Wrong Token Authorization Header");
@@ -17,7 +16,6 @@ const  authenticateToken = (req, res, next)=> {
       if(!fetchUser) return errorResponse(res,ErrorCodes.NOT_FOUND, err.message);
       else if(user.id !== fetchUser.id) return errorResponse(res,ErrorCodes.NOT_FOUND, "Wrong user information");
 
-      console.log("PASS token===============>");
       next();
     })
   }

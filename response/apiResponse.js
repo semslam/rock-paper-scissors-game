@@ -36,6 +36,7 @@ const payloadValidateErrorResponse = (res,next,error) =>{
             status:STATUS_FAILED,
             message:error.details[0].message
         }
+        console.log(result);
       return res.status(422).json(result);
     }
     next();
