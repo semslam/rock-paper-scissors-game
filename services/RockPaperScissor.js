@@ -6,11 +6,7 @@ import figlet from "figlet";
 import { createSpinner } from "nanospinner";
 
 // print type list
-const [ 
-TEMP_TIED, 
-PERM_TIED, 
-CURR_SCORE, 
-WINNER 
+const [TEMP_TIED,PERM_TIED,CURR_SCORE,WINNER 
 ] = [
 "temporaryTied",
 "permanentTied",
