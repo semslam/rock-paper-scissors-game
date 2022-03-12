@@ -132,8 +132,8 @@ let temporaryTied = async (properties,apiRes)=>{
         resultStick.push(text);
         tempResult.push(text);
         compilingResult(properties,draw);
-        console.log(`|========SEMSALM====temporaryTied====|${gameResult}`);
-        console.log(properties);
+        // console.log(`|========SEMSALM====temporaryTied====|${gameResult}`);
+        // console.log(properties);
         if(gameOption === HUMAN_VS_COMPUTER){
             return successResponse(apiRes,HttpCodes.OK,"TIED CONTINUE",resultStick);
         }
@@ -160,11 +160,11 @@ let temporaryTied = async (properties,apiRes)=>{
             resultStick = [];tempResult = [];rowData = [];drawTimes =0;winningTimes =0;
             
             // console.log(apiRes)
-            console.log(`|========SEMSALM====permanentTied====|${gameResult}`)
-            console.log(properties);
+            // console.log(`|========SEMSALM====permanentTied====|${gameResult}`)
+            // console.log(properties);
             // insert the result in database
             const game = await create(gameRecord);
-            console.log(game)
+            // console.log(game)
             gameRecord = {}
            return await successResponse(apiRes,HttpCodes.OK,"TIED",game);
         }
@@ -182,8 +182,8 @@ let temporaryTied = async (properties,apiRes)=>{
             compilingResult(properties,win);
             resultStick.push(text);
             tempResult.push(text);
-            console.log(`|========SEMSALM=====currentScore===|${gameResult}`)
-            console.log(properties);
+            // console.log(`|========SEMSALM=====currentScore===|${gameResult}`)
+            // console.log(properties);
             if(gameOption === HUMAN_VS_COMPUTER){
                 return successResponse(apiRes,HttpCodes.OK,"CURRENT SCORE",resultStick);
             } 
@@ -207,7 +207,7 @@ let temporaryTied = async (properties,apiRes)=>{
             resultStick = [],tempResult = [],rowData = [],drawTimes = 0,winningTimes = 0;
 
             // console.log(apiRes);
-            console.log(`|========SEMSALM====finalWinner====|${gameResult}`)
+            // console.log(`|========SEMSALM====finalWinner====|${gameResult}`)
             const game = await create(gameRecord)
             gameRecord = {}
            return successResponse(apiRes,HttpCodes.OK,"WINNER",game)

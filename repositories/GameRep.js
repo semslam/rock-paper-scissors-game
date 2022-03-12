@@ -7,7 +7,7 @@ const create = async (query) =>{
         if(!gameRecord) throw Error('It cannot create user');
         return gameRecord;
     } catch (err) {
-        console.log(err)
+        console.log(err.message)
         throw err.message;
     }
    

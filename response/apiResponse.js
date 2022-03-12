@@ -1,4 +1,5 @@
 const {convertDateToTimeStamp} = require("../libraries/DateFormat");
+const {} = require("../libraries/Validator")
 const STATUS_FAILED = "Failed";
 const STATUS_SUCCESS = "Successful";
 const timestamp = convertDateToTimeStamp(new Date());
@@ -10,8 +11,8 @@ const successResponse = (res,HTTP_SUCCESS,successMessage, data = null) =>{
         status:STATUS_SUCCESS,
         message:successMessage
       }
-      if(data !== undefined || data !== null || data !== [])  result.data = data;
-      console.log(result);
+      if(data !== undefined || data !== null)  result.data = data;
+      console.log(result);  
    return res.status(HTTP_SUCCESS).send(result);
 }
 

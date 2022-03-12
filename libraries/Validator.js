@@ -133,6 +133,17 @@ const isFalse = (value) => {
 };
 
 /**
+ * It will return the type back to you
+ * @param {*} value
+ * @return {string}
+ */
+ const getType = (value) => {
+  if (value === undefined) return 'undefined';
+  if (value === null) return 'null';
+  return typeof value;
+};
+
+/**
  * IsString returns boolean true valiue if object is a string type
  * @param  {any} value - object to confirm if string type
  * @return {boolean} result - result of type of check
@@ -149,6 +160,19 @@ const isString = (value) => {
 const isNumber = (value) => {
   return getType(value) === 'number' && !isNaN(value)? true : false;
 };
+/**
+ * Remove undefine from object and return the object
+ * @param {Object} obj 
+ * @returns {Object} obj
+ */
+const removeUndefineInObj =(obj)=>{
+  for (const key in obj) {
+   if (obj[key] === undefined) {
+     delete obj[key];
+   }
+ }
+ return obj;
+ }
 
 
 module.exports ={
@@ -163,6 +187,8 @@ module.exports ={
   isArray,
   isTrue,
   isFalse,
+  getType,
   isNull,
   hasValue,
+  removeUndefineInObj
 };

@@ -2,7 +2,6 @@
 // const require = createRequire(import.meta.url);
 const express = require("express");
 const cors = require("cors");
-// const passer = require("./api/routes");
 const connectDB = require("./models/mongodb/config");
 // Connect to MongoDB
 connectDB()

@@ -155,7 +155,6 @@ class RockPaperScissor{
     switch (printType) {
         case TEMP_TIED:
             properties.tieCount = this.tieCount;
-            console.log(properties)
           this.tieCount++;
           if(this.gameMode === CONSOLE){
             await resultManagement.temporaryTied(properties)

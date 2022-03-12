@@ -51,11 +51,11 @@ type GameRecords {
     createAt:String
   }
 `;
-// user(id: String!): User
-// fetched by userId!, id, limit = 10!, cursor = 1, bigginDate, endDate,
+
 const gameSchema = buildSchema(`
   type Query {
-    gameRecords(userId: String!,id: String):[GameRecords]
+    gameRecords(userId: String!,_id: String):[GameRecords]
+    anyGameResult(_id: String,userId: String,isWin: Boolean,gameMode:String,gameType:String,drawTimes:Int,winningTimes:Int):[GameRecords]
   }
   ${gameRecords},
   ${playingHistories},
@@ -63,16 +63,7 @@ const gameSchema = buildSchema(`
 
 `);
 
-// const schema = buildSchema(`
-//   type Query {
-//     user(id: String!): [User]
-//   }
-//   type User {
-//     id: String
-//     username:String
-//     gender:String
-//   }
-// `);
+
 
 module.exports = gameSchema;
 

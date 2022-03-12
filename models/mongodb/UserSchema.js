@@ -8,7 +8,7 @@ const ObjectId = Schema.ObjectId;
 
 
 const UserSchema = new Schema({
-    username: { type:String, required: true},
+    username: { type:String, required: true,unique: true},
     password: { type:String, required: true},
     gender:{ type:String, required: false,enum: [MALE,FEMALE]},
     createAt:{ type: Date, default: Date.now},

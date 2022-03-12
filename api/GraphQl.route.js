@@ -1,45 +1,137 @@
 const { graphqlHTTP } = require("express-graphql");
-const gameManager = require("../services/GameManager");
+const reportManager = require("../services/ReportManager");
 const gameSchema = require("../models/graphqlQueries/GameRecordsBuildSchema");
-const { buildSchema } = require("graphql");
+const userSchema = require("../models/graphqlQueries/UsersBuildSchema");
+const {removeUndefineInObj} = require("../libraries/Validator");
+
+const fetchGameReport= async (query)=>{
+   return await  reportManager.fetchGameRecords(query);
+}
+const fetchUserReport= async (query)=>{
+    return await  reportManager.fetchUserRecords(query);
+ }
+ const fetchSingleUserRecord= async (query)=>{
+    return await  reportManager.fetchSingleUserRecord(query); 
+ }
 
 module.exports = (router) => {
-const root = { 
-    gameRecords: async ({userId})=>{ 
-        let rec = await  gameManager.fetchGameRecords({userId});
-        // rec.filter(records => records.userId === userId);
-      
-      console.log(rec);
-      return rec;
-    } 
+const gameRoot = { 
+    gameRecords: async ({userId,_id})=>{ 
+      return fetchGameReport(removeUndefineInObj({userId,_id}));
+    },
+    anyGameResult: async ({_id,userId,isWin,gameMode,gameType,drawTimes,winningTimes})=>{ 
+        return fetchGameReport(removeUndefineInObj({_id,userId,isWin,gameMode,gameType,drawTimes,winningTimes}));
+      }
+}
+
+const userRoot = { 
+    getUser: async ({_id})=>{ 
+      return fetchSingleUserRecord(removeUndefineInObj({_id}));
+    },
+    getUsers: async ({_id,username,gender})=>{ 
+        console.log({_id,username,gender});
+      return fetchUserReport(removeUndefineInObj({_id,username,gender}));
+    }
 }
 
 
+router.use('/user_record', graphqlHTTP({
+    schema: userSchema,
+    rootValue:userRoot,
+    graphiql: true,
+}));
 
-// const root = {
-//   user: ({id}) => {
-//     return [{
-//         id: "43984308409wrrjio4930",
-//         username:"semslam@gmai.com",
-//         gender:"Male"
-//     },{
-//         id: "43984308409fjrui94938dj",
-//         username:"obafemi@gmai.com",
-//         gender:"Female"
-//     },{
-//         id: "4444infn409wrrjio4930",
-//         username:"oladele@gmai.com",
-//         gender:"Male"
-//     }].filter(users => users.id === id);
-//   },
-// };
+router.use('/game_result', graphqlHTTP({
+    schema: gameSchema,
+    rootValue:gameRoot,
+    graphiql: true,
+}));
 
-    router.use('/graphql', graphqlHTTP({
-        schema: gameSchema,
-        rootValue:root,
-        graphiql: true,
-      }));
-
-    return router;
+return router;
 }
+
+// GraphQl Game Records query
+
+// {
+//     gameRecords(userId:"62222dc983398810e7d52f23",_id:"6223a8cff87ec5d02e713350"){
+//       _id
+//       userId
+//       isWin
+//       gameMode
+//       gameType
+//       drawTimes
+//       winningTimes
+//       playingHistory {
+//         resultType
+//         playerOne
+//         playerOneMove
+//         playerOneScores
+//         playerTwo
+//         playerTwoMove
+//         playerTwoScores
+//       }
+//       rowRecords
+//       scoreRecord {
+//         playerOne {
+//           name,
+//           scores
+//         }
+//         playerTwo {
+//           name,
+//           scores
+//         }
+//       }
+//       createAt
+//     }
+//   }
+
+// {
+//     anyGameResult(userId: "62222dc983398810e7d52f23",isWin:true,gameType: "computerVsComputer",winningTimes: 3,_id: "6228df0655e18dbae64aaaf1"){
+//       _id
+//       userId
+//       isWin
+//       gameMode
+//       gameType
+//       drawTimes
+//       winningTimes
+//       playingHistory {
+//         resultType
+//         playerOne
+//         playerOneMove
+//         playerOneScores
+//         playerTwo
+//         playerTwoMove
+//         playerTwoScores
+//       }
+//       rowRecords
+//       scoreRecord {
+//         playerOne {
+//           name,
+//           scores
+//         }
+//         playerTwo {
+//           name,
+//           scores
+//         }
+//       }
+//       createAt
+//     }
+
+
+// GraphQl User Records query
+
+// {
+//     getUser(_id:"62222dc983398810e7d52f23"){
+//       _id,
+//       username,
+//       gender,
+//       createAt
+//     },
+//     getUsers(gender:"Female"){
+//       _id,
+//       username,
+//       gender,
+//       createAt
+//     }
+//   }
 
