@@ -2,7 +2,7 @@
 const RockPaperScissor = require("../../services/RockPaperScissor");
 const {successResponse,errorResponse} = require("../../response/apiResponse");
 const {HttpCodes} = require("../../libraries/sustainedValues");
-const {isEmpty,isObjEmpty,isNotEmpty,existProperty,isNumber,isBoolean,isString,isNullOrUndefinedType,isArray,isTrue,isFalse,isNull,hasValue} = require("../../libraries/Validator")
+const {isObjEmpty} = require("../../libraries/Validator");
 const auth = require("../../middleware/jsonwebtokenAuthentication");
 
 
@@ -17,14 +17,14 @@ gameOptionsAndMoves.token = auth.getToken(req,res);
 gameOptionsAndMoves.gameRound = req.body.gameRound;
 gameOptionsAndMoves.playingMode = req.body.playersType;
 
-// if computer and computer no need to provide a name and moves
+// if computer vs computer no need to provide a name and moves
 let response = {message:`You have chosen ${gameOptionsAndMoves.playingMode} as playerTypes, You are playing ${req.body.gameRound} round`};
     if(req.body.playersType === "humanVsComputer"){
         rockPaperScissor.gameStatus = false;
         successResponse(res,HttpCodes.OK,"Please provide the player name",response);
     }else{
         gameOptionsAndMoves.playerName = "Robot";
-        rockPaperScissor.apiPlayingProcess(res,gameOptionsAndMoves)
+        rockPaperScissor.apiPlayingProcess(res,gameOptionsAndMoves);
     } 
 
 }
