@@ -7,13 +7,13 @@ const  {ErrorCodes} = require("../libraries/sustainedValues");
 const {errorResponse} = require("../response/apiResponse");
 const sleep = require("../libraries/sleep");
  
-
 // print type list
 const [TEMP_TIED,PERM_TIED,CURR_SCORE,WINNER ] = printOutType;
 // repeated values
 const [ROCK,PAPER,SCISSORS,COMPUTER,TIED,HUMAN_VS_COMPUTER,COMPUTER_VS_COMPUTER,] = repeatedValues;
 const [CONSOLE,API, CONSOLE_AND_API] = isConsoleOrApi;
 class RockPaperScissor{
+
   // * a user can pick either paper, scissors, or rock as a choice.
   // * the computer will choose a random option from the three choices to play against the user.
   // * the user can visually see what they chose and what the computer chose.
@@ -26,10 +26,12 @@ class RockPaperScissor{
     this.consoleMode = new ConsoleMode();
     this.gameComponents = new GameComponents();
   }
+
   gameStatus =false;
   clear = console.clear;
   log = console.log;
-  maxGameTie = 2;tieCount = 1;playerScore = 0;computerScore = 0;gameRound = 0;playerName = ""; token ="";
+  maxGameTie = 50;tieCount = 1;playerScore = 0;computerScore = 0;gameRound = 0;playerName = ""; token ="";
+
   consoleWelcome = async (startNewGame = false)  =>{
       if(!startNewGame){
         await this.consoleMode.welcome();
@@ -40,9 +42,6 @@ class RockPaperScissor{
    this.consolePredictMove(res.gameOption,res.playerName)
 
   }
-
-
-  
 
   consolePredictMove = async (gameOption,playerName)=>{
       
@@ -72,7 +71,7 @@ class RockPaperScissor{
     }else if(gameOption === HUMAN_VS_COMPUTER){
         this.gameRound = properties.gameRound;
         if(this.gameStatus){
-            errorResponse(apiRes,ErrorCodes.FORBIDDEN,"The has ended,You are have to start another game");
+           return errorResponse(apiRes,ErrorCodes.FORBIDDEN,"The has ended,You are have to start another game");
         }
         this.apiPredictMove(apiRes,gameOption,playerName,externalMove)
     }
@@ -139,6 +138,71 @@ class RockPaperScissor{
       : this.printOutOptions(gameOption,playerName,computerMove,playerMove,PERM_TIED,gameResult,apiRes);
   };
 
+  /**
+   * set all the variables back to default
+   */
+  setPropertiesToDefault(){
+    this.gameRound = 0;this.computerScore = 0; this.playerScore = 0; this.tieCount = 1; this.token =""; this.gameStatus= true;
+  }
+
+  /**
+   * This function processes the ongoing tie game
+   * @param {Object} properties 
+   */
+  temporaryTieProcess = async (properties,apiRes) =>{
+    properties.tieCount = this.tieCount;
+    this.tieCount++;
+    if(this.gameMode === CONSOLE){
+      await resultManagement.temporaryTied(properties)
+      this.consolePredictMove(properties.gameOption, properties.playerName);
+    }else{
+      await resultManagement.temporaryTied(properties,apiRes)  
+    }
+  }
+  /**
+   * This function processes the ongoing winning game
+   * @param {Object} properties 
+   */
+  temporaryWinningProcess = async (properties,apiRes) =>{
+    properties.gameRound = this.gameRound;
+    this.gameRound--, this.tieCount = 1; // set tieCount back to 1
+    if(this.gameMode === CONSOLE){
+      await resultManagement.currentScore(properties)
+      this.consolePredictMove(properties.gameOption,properties.playerName);
+    }else{
+      await resultManagement.currentScore(properties,apiRes);
+    }
+  }
+  /**
+   * This function processes the final winning game
+   * @param {Object} properties 
+   */
+  permanentWinnerProcess = async (properties,apiRes) =>{
+    this.setPropertiesToDefault();
+    if(this.gameMode === CONSOLE){
+       await resultManagement.finalWinner(properties);
+       await this.consoleMode.congratsWinner(properties.gameResult)
+       await this.playAgain();
+    }else{
+       await resultManagement.finalWinner(properties,apiRes);
+    }
+  } 
+    /**
+     * This function processes the final tied game
+     * @param {Object} properties 
+     */
+    permanentTiedProcess = async (properties,apiRes) =>{
+        properties.tieCount = this.tieCount;
+        this.setPropertiesToDefault();
+
+        if(this.gameMode === CONSOLE){
+          await resultManagement.permanentTied(properties)
+          process.exit();
+        }else{
+          await resultManagement.permanentTied(properties,apiRes);
+        }
+    } 
+
     /**
      * This print out result base options
      * @param {String} gameOption 
@@ -154,49 +218,19 @@ class RockPaperScissor{
     
     switch (printType) {
         case TEMP_TIED:
-            properties.tieCount = this.tieCount;
-          this.tieCount++;
-          if(this.gameMode === CONSOLE){
-            await resultManagement.temporaryTied(properties)
-            this.consolePredictMove(properties.gameOption, properties.playerName);
-          }else{
-            await resultManagement.temporaryTied(properties,apiRes)  
-          }
+          this.temporaryTieProcess(properties,apiRes);
           break;
         case PERM_TIED:
-            properties.tieCount = this.tieCount;
-          this.gameRound = 0;this.computerScore = 0; this.playerScore = 0; this.tieCount = 1; this.token =""; this.gameStatus= true;
-
-          if(this.gameMode === CONSOLE){
-            await resultManagement.permanentTied(properties)
-            process.exit();
-          }else{
-            await resultManagement.permanentTied(properties,apiRes);
-          }
+         this.permanentTiedProcess(properties,apiRes);
           break;
         case CURR_SCORE:
-            properties.gameRound = this.gameRound;
-          this.gameRound--, this.tieCount = 1; // set tieCount back to 1
-          if(this.gameMode === CONSOLE){
-            await resultManagement.currentScore(properties)
-            this.consolePredictMove(properties.gameOption,properties.playerName);
-          }else{
-            await resultManagement.currentScore(properties,apiRes);
-          }
+            this.temporaryWinningProcess(properties,apiRes);
           break;
         case WINNER:
-         this.gameRound = 0;this.computerScore = 0; this.playerScore = 0; this.tieCount = 1; this.token =""; this.gameStatus= true;
-         if(this.gameMode === CONSOLE){
-            await resultManagement.finalWinner(properties);
-            await this.consoleMode.congratsWinner(properties.gameResult)
-            await this.playAgain();
-         }else{
-            await resultManagement.finalWinner(properties,apiRes);
-         }
-          
+            this.permanentWinnerProcess(properties,apiRes);
           break;
         default:
-          console.log("Wrong parameter pass printOutOptions");
+        //   console.log("Wrong parameter pass printOutOptions");
           throw new Error("Wrong parameter pass in printOutOptions");
       }
     

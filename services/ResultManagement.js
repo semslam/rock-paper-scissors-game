@@ -21,7 +21,6 @@ let rowData = []
 let drawTimes =0
 let winningTimes = 0;
 let resultStick = [];
-let tempResult = [];
 
 
 /**
@@ -47,9 +46,9 @@ let tempResult = [];
  * @param {Object} records 
  * @param {String} userToken 
  */
- const finalCompile = async (records,userToken)=>{
+ const finalCompile = async (records)=>{
     const uniqId = async (token)=> {return await decryptToken(token);}
-    const token = await uniqId(userToken);
+    const token = await uniqId(records.token);
     gameRecord.userId = token.id;
     gameRecord.gameMode =  API;
     gameRecord.gameType = records.gameOption;
@@ -113,34 +112,54 @@ let spinSleepAndPrint = async (type,text)=>{
          pickEmojiExpression(gameResult,playerName)
        }  ${gameComponents.chooseEmojiMove(moves.playerMove)}(${moves.playerMove}) ${
         scores.playerScore
-       } VS ${scores.computerScore} (${moves.computerMove}) ${gameComponents.chooseEmojiMove(
+       } VS ${scores.computerScore} (${moves.computerMove})${gameComponents.chooseEmojiMove(
         moves.computerMove
        )} ${
          pickEmojiExpression(gameResult,COMPUTER)
        }:(Computer)`;
  };
+    /**
+     * On a tie, designate the console and API current result
+     * @param {Object} properties 
+     * @param {Object} apiRes 
+     */
+    const temporaryTied = async (properties,apiRes)=>{
+        const {gameResult,playerName,moves,scores,tieCount,gameMode,gameOption} = properties;
+        let commonText = commonTextDisplay(gameResult,playerName,moves,scores);
+        let text = `The game is tied, ${commonText}, tie count ${tieCount}. ${gameMode === CONSOLE? colors.green("Continue playing the game"): "Continue playing the game"}`;
+        
+        if(gameMode === CONSOLE){
+            await spinSleepAndPrint(TEMP_TIED,text);
+        }else{
+            drawTimes += 1
+            currentDataProcess(apiRes,properties,text,draw,"TIED CONTINUE");
+        }
+        
+    }
 
-let temporaryTied = async (properties,apiRes)=>{
-    const {gameResult,playerName,moves,scores,tieCount,gameMode,gameOption} = properties;
-    let commonText = commonTextDisplay(gameResult,playerName,moves,scores);
-    let text = `The game is tied, ${commonText}, tie count ${tieCount}. ${gameMode === CONSOLE? colors.green("Continue playing the game"): "Continue playing the game"}`;
-    
-    if(gameMode === CONSOLE){
-        await spinSleepAndPrint(TEMP_TIED,text);
-    }else{
-         drawTimes += 1
-        resultStick.push(text);
-        tempResult.push(text);
-        compilingResult(properties,draw);
-        // console.log(`|========SEMSALM====temporaryTied====|${gameResult}`);
-        // console.log(properties);
-        if(gameOption === HUMAN_VS_COMPUTER){
-            return successResponse(apiRes,HttpCodes.OK,"TIED CONTINUE",resultStick);
+    /**
+     * Designate the current console and API result as the winner
+     * @param {Object} properties 
+     * @param {Object} apiRes 
+     */
+
+    const currentScore = async (properties,apiRes) =>{
+        const {gameResult,playerName,moves,scores,gameMode,gameRound,gameOption} = properties;
+        let commonText = commonTextDisplay(gameResult,playerName,moves,scores);
+        let text = `Current score..., ** round ${4 - gameRound } ** ${commonText}, ${gameMode === CONSOLE? colors.green("Play again"):"Play again"}`;
+        if(gameMode === CONSOLE)
+          await spinSleepAndPrint(CURR_SCORE,text);
+        else{
+            winningTimes +=1;
+            currentDataProcess(apiRes,properties,text,win,"WIN CONTINUE");
         }
     }
-     
-}
-    let permanentTied = async (properties,apiRes)=>{
+    /**
+     * Determine the final result tie between the console and the API
+     * @param {Object} properties 
+     * @param {Object} apiRes 
+     */
+    const permanentTied = async (properties,apiRes)=>{
         const {gameResult,playerName,moves,scores,tieCount,gameMode,gameOption,token} = properties;
         let commonText = commonTextDisplay(gameResult,playerName,moves,scores);
         let path = ` 🙅‍♂️ continuing tie after ${tieCount} rounds of play, which is now officially tied`;
@@ -149,70 +168,63 @@ let temporaryTied = async (properties,apiRes)=>{
         await spinSleepAndPrint(PERM_TIED,text);
         else{
             drawTimes +=1
-           
-            await finalCompile(properties,token)
-            gameRecord.isWin = false;
-            gameRecord.winner = "N/A";
-            compilingResult(properties,draw);
-            resultStick.push(text);
-            gameRecord.rowRecords = resultStick;
-
-            resultStick = [];tempResult = [];rowData = [];drawTimes =0;winningTimes =0;
-            
-            // console.log(apiRes)
-            // console.log(`|========SEMSALM====permanentTied====|${gameResult}`)
-            // console.log(properties);
-            // insert the result in database
-            const game = await create(gameRecord);
-            // console.log(game)
-            gameRecord = {}
-           return await successResponse(apiRes,HttpCodes.OK,"TIED",game);
-        }
-             
+            finalDataProcess(apiRes,properties,text,draw,"TIED")        
+        }     
     }
-   let currentScore = async (properties,apiRes) =>{
-        const {gameResult,playerName,moves,scores,gameMode,gameRound,gameOption} = properties;
-        let commonText = commonTextDisplay(gameResult,playerName,moves,scores);
-        let text = `Current score..., ** round ${4 - gameRound } ** ${commonText}, ${gameMode === CONSOLE? colors.green("Play again"):"Play again"}`;
-        if(gameMode === CONSOLE)
-          await spinSleepAndPrint(CURR_SCORE,text);
-        else{
-          
-            winningTimes +=1;
-            compilingResult(properties,win);
-            resultStick.push(text);
-            tempResult.push(text);
-            // console.log(`|========SEMSALM=====currentScore===|${gameResult}`)
-            // console.log(properties);
-            if(gameOption === HUMAN_VS_COMPUTER){
-                return successResponse(apiRes,HttpCodes.OK,"CURRENT SCORE",resultStick);
-            } 
-        }
-    }
-   let  finalWinner = async (properties,apiRes) =>{
+    /**
+     * Designate console and API final results based on the winner
+     * @param {Object} properties 
+     * @param {Object} apiRes 
+     */
+    const  finalWinner = async (properties,apiRes) =>{
         const {gameResult,playerName,moves,scores,gameMode,gameOption,token} = properties;
         let commonText = commonTextDisplay(gameResult,playerName,moves,scores);
         let text = `The winner is ${gameResult} *🤝 😁 🤴 🥳 🥂 🕺 💃 🍾* ${commonText}`;
         if(gameMode === CONSOLE)
           await spinSleepAndPrint(WINNER,text);
         else{
-            gameRecord.isWin = true;
-            gameRecord.winner = gameResult;
             winningTimes +=1;
-            await finalCompile(properties,token);
-            compilingResult(properties,win);
-            resultStick.push(text);
-            gameRecord.rowRecords = resultStick;
-
-            resultStick = [],tempResult = [],rowData = [],drawTimes = 0,winningTimes = 0;
-
-            // console.log(apiRes);
-            // console.log(`|========SEMSALM====finalWinner====|${gameResult}`)
-            const game = await create(gameRecord)
-            gameRecord = {}
-           return successResponse(apiRes,HttpCodes.OK,"WINNER",game)
+            finalDataProcess(apiRes,properties,text,win,"WINNER")
         }
     }
+    /**
+     * final game result processor
+     * @param {Object} apiRes 
+     * @param {Object} properties 
+     * @param {String} text 
+     * @param {String} resultType 
+     * @param {String} winOrDraw 
+     * @returns 
+     */
+  async function finalDataProcess(apiRes,properties,text,resultType,winOrDraw){
+        gameRecord.isWin = resultType === win? true:false;
+            gameRecord.winner = resultType === win? properties.gameResult:"N/A";
+            await finalCompile(properties);
+            compilingResult(properties,resultType);
+            resultStick.push(text);
+            gameRecord.rowRecords = resultStick;
+            resultStick = [],rowData = [],drawTimes = 0,winningTimes = 0;
+            const game = await create(gameRecord)
+            gameRecord = {}
+            
+        return successResponse(apiRes,HttpCodes.OK,winOrDraw,game)
+    }
+    /**
+     * current game result processor
+     * @param {Object} apiRes 
+     * @param {Object} properties 
+     * @param {String} text 
+     * @param {String} resultType 
+     * @param {String} winOrDraw 
+     * @returns 
+     */
+   function currentDataProcess(apiRes,properties,text,resultType,winOrDraw){
+        compilingResult(properties,resultType);
+        resultStick.push(text);
+        if(properties.gameOption === HUMAN_VS_COMPUTER){
+            return successResponse(apiRes,HttpCodes.OK,winOrDraw,resultStick);
+        } 
+   } 
 
 
 

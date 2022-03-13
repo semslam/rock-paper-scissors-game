@@ -3,12 +3,14 @@
 const express = require("express");
 const cors = require("cors");
 const connectDB = require("./models/mongodb/config");
+const {ErrorCodes,HttpCodes} = require("./libraries/sustainedValues");
+const {errorResponse,successResponse} = require("./response/apiResponse")
 // Connect to MongoDB
 connectDB()
 const app = express();
 
 const corsOptions = {
-  origin: "http://localhost:9000"
+  origin: `${process.env.HOST}:${process.env.PORT}`
 };
 
 app.use(cors(corsOptions));
@@ -22,15 +24,15 @@ app.use(express.json());  /* bodyParser.json() is deprecated */
 app.use(express.urlencoded({ extended: true }));   /* bodyParser.urlencoded() is deprecated */
 // simple route
 app.get("/", (req, res) => {
-  res.json({ message: "Welcome to Welcome to rock paper scissors game" });
+  successResponse(res,HttpCodes.OK,{ message: "Welcome to Welcome to rock paper scissors game" });
 });
 
 require("./api/routes")(app)
 
 app.all('*', (req, res) => {
-  res.status(404).send({
-    message: "404 Not Found"
-    }); 
+  errorResponse(res,ErrorCodes.NOT_FOUND,{
+    message: "Not Found"
+    })
 });
 // set port, listen for requests
 const PORT = process.env.PORT || 9000;

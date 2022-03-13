@@ -2,10 +2,9 @@ const userSchema = require("../models/mongodb/UserSchema");
 
 
 const create = async (query) =>{
-    try {
-        
-       const isExist = await userSchema.findOne({username:query.username}).exec();
-       if(isExist) throw Error('User already exist') 
+    try {  
+    //    const isExist = await userSchema.findOne({username:query.username}).exec();
+    //    if(isExist) throw Error('User already exist') 
         const user = await userSchema.create(query);
         if(!user) throw new Error('It cannot create user');
         return user;

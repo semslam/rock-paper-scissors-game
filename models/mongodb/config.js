@@ -15,7 +15,6 @@ const connectDB = async () => {
     }
 }
 
-
 mongoose.connection.on('connecting', () => console.info('database connecting....'));
 mongoose.connection.on('connected', () => console.info('database connected'));
 mongoose.connection.on('disconnecting', () => console.info('database disconnecting....'));
