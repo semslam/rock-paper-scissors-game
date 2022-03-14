@@ -31,7 +31,9 @@ $ npm test -- Validator.test.js
 1. A user must be aboard. The system offers a point for a user to be onboarded (creating a user account).
 
 Onboard User URL Path (POST)`/authorize/onboard`
+```
 Payload Example:
+```
 {
   "username": "ibrahim@example.com",
   "password": "1234567",
@@ -41,59 +43,70 @@ Payload Example:
 2. Before playing the game, the user must first login. After successfully login in, the user receives an access token that may be used to connect with other game endpoints.
 
 User Login URL Path (POST) `/authorize/login`
+```
 Payload Example:
+```
 {
   "username": "ibrahim@example.com",
   "password": "1234567"
 }
+```
 3. Playing with a computer is divided into three stages. The first is the play most, which offers the game player type (human vs. computer) and the number of rounds played (one or three).
 
 Game propperties for human vs. computer URL Path (POST) `/process/game_properties`
+```
 Header Authorization, bearer with the user token: Authorization Bearer $token
 Payload Example:
+```
 {
   "playersType": "humanVsComputer",
   "gameRound": 3 || 1
 }
-
+```
 4. The following endpoint allows the user to enter the player's name.
 
 Play name URL Path (POST) `/process/player_name`
+```
 Header Authorization, bearer with the user token: Authorization Bearer $token
 Payload Example:
+```
 {
   "playerName": "Olanrewaju"
 }
-
+```
 5. The last endpoint allows the user to specify a game move, such as rock, paper, or scissors.
 
 Play moves URL Path (POST) `/process/player_name`
 Header Authorization, bearer with the user token: Authorization Bearer $token
 Payload Example:
+```
 {
   "playersMove": "rock" || "paper" || "scissors"
 }
-
+```
 6. A computer Vs. computer game requires the user to input the player type computerVsComputer as well as the number of rounds to play (one or three).
 
 Game propperties for computer vs. computer URL Path (POST) `/process/game_properties`
+```
 Header Authorization, bearer with the user token: Authorization Bearer $token
 Payload Example:
+```
 {
   "playersType": "computerVsComputer",
   "gameRound": 3 || 1
 }
-
+```
 #### Game,User Storage and Reports
 1. The game include a storage and reports. The game's results are stored in the MongoDB database and also presented as JSON, which contains the game ID and user ID.
 2. The system provides a GraphQL endpoint for the game reports.
 3. An endpoint is available for retrieving individual users or game information. as well as an endpoint for retrieving the most recent user and game information by filtering.
 1. Graphql endpoint to query game result
 URL Path (POST) `/queries/game_result`
+```
 Header Authorization, bearer with the user token: Authorization Bearer $token
 Query payload Example:
 GraphQl Game Records query
-
+```
 query{
     gameRecords(userId:"62222dc983398810e7d52f23",_id:"6223a8cff87ec5d02e713350"){
       _id
@@ -126,7 +139,7 @@ query{
       createAt
     }
   }
-
+```
 query{
     anyGameResult(userId: "62222dc983398810e7d52f23",isWin:true,gameType: "computerVsComputer",winningTimes: 3,_id: "6228df0655e18dbae64aaaf1"){
       _id
@@ -158,14 +171,15 @@ query{
       }
       createAt
     }
-
+```
 2. Graphql endpoint for query user records
 
 URL Path (POST) `/queries/user_record`
+```
 Header Authorization, bearer with the user token: Authorization Bearer $token
 Query payload Example:
 GraphQl User Records query
-
+```
 query{
     getUser(_id:"62222dc983398810e7d52f23"){
       _id,
