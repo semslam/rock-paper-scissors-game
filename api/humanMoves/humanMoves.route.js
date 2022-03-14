@@ -5,11 +5,11 @@ const auth = require("../../middleware/jsonwebtokenAuthentication");
 module.exports = (router) => {
     
     // accept the game properties request
-    router.post('/game_options/',auth.authenticateToken, playingValidateReq,humanMoves.provideGameOption);
+    router.post('/game_properties/',auth.authenticateToken, playingValidateReq,humanMoves.provideGameOption);
     // accept the player name request
     router.post('/player_name/',auth.authenticateToken, playerNameValidateReq,humanMoves.providePlayerName);
-    // accept the player mover request
-    router.post('/game_move/',auth.authenticateToken, playerMoveValidateReq,humanMoves.gameMove);
+    // accept the player move request
+    router.post('/player_move/',auth.authenticateToken, playerMoveValidateReq,humanMoves.gameMove);
     
 
     return router;

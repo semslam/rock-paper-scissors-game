@@ -9,16 +9,6 @@ const [ROCK,PAPER,SCISSORS,COMPUTER,TIED,HUMAN_VS_COMPUTER,COMPUTER_VS_COMPUTER]
 
 const rockPaperScissor = new RockPaperScissor("api");
 
-// wrongRequest = (res,message)=>{
-//     // check if the gameOptionsAndMoves is empty
-//     if(isObjEmpty(gameOptionsAndMoves))
-//         return errorResponse(res,HttpCodes.NOTACCEPTABLE,{ message:"Sorry, you have to start a new game" });
-    
-//    else if(gameOptionsAndMoves.playingMode === COMPUTER_VS_COMPUTER)
-//        return errorResponse(res,HttpCodes.NOTACCEPTABLE,{ message:`You are not meant to provide ${message}; the game is played by computer versus computer` });
-    
-// }
-
 let gameOptionsAndMoves = {};
 
 const provideGameOption = async (req, res)=>{
@@ -28,7 +18,7 @@ gameOptionsAndMoves.token = auth.getToken(req,res);
 gameOptionsAndMoves.gameRound = req.body.gameRound;
 gameOptionsAndMoves.playingMode = req.body.playersType;
 
-// if computer vs computer no need to provide a name and moves
+
 let response = {message:`You have chosen ${gameOptionsAndMoves.playingMode} as playerTypes, You are playing ${req.body.gameRound} round`};
     if(req.body.playersType === HUMAN_VS_COMPUTER){
         rockPaperScissor.gameStatus = false;
@@ -41,40 +31,32 @@ let response = {message:`You have chosen ${gameOptionsAndMoves.playingMode} as p
 }
 
 const providePlayerName = (req, res)=>{
-    // check if the gameOptionsAndMoves is empty
+
     if(isObjEmpty(gameOptionsAndMoves)){
-        return errorResponse(res,HttpCodes.NOTACCEPTABLE,{ message:"Sorry, you have to start a new game" });
+        return errorResponse(res,HttpCodes.NOTACCEPTABLE,{ message:"Sorry, a player name will not be accepted. You must start a new game." });
     }
     if(gameOptionsAndMoves.playingMode === COMPUTER_VS_COMPUTER){
-       return errorResponse(res,HttpCodes.NOTACCEPTABLE,{ message:"You are not meant to provide a player name; the game is played by computer versus computer" });
+       return errorResponse(res,HttpCodes.NOTACCEPTABLE,{ message:"You are not permitted to provide a player name since the game is played by computer vs computer" });
     }else{
         gameOptionsAndMoves.playerName = req.body.playerName
-        let response = {message:`Your player name is: ${req.body.playerName}`,nextRequest:['Please choose your move',["rock", "paper", "scissors"]]};
-        successResponse(res,HttpCodes.OK,"Please choose your move",response);
+        let response = {message:`Your game properties are  ${gameOptionsAndMoves.playingMode} as game type, ${gameOptionsAndMoves.gameRound} round(s) and ${req.body.playerName} as player name`,nextRequest:['Please choose your move',["rock", "paper", "scissors"]]};
+        successResponse(res,HttpCodes.OK,"Your player name is acceptable, next play a move",response);
     }
 
-    
-    // wrongRequest(res,"a player name");
-    // gameOptionsAndMoves.playerName = req.body.playerName
-    //     let response = {message:`Your player name is: ${req.body.playerName}`,nextRequest:['Please choose your move',["rock", "paper", "scissors"]]};
-    //     successResponse(res,HttpCodes.OK,"Please choose your move",response);
-   
 }
 
 const gameMove = (req, res)=>{
-    // check if the gameOptionsAndMoves is empty
+   
     if(isObjEmpty(gameOptionsAndMoves)){
-        return errorResponse(res,HttpCodes.NOTACCEPTABLE,{ message:"Sorry, you have to start a new game" });
+        return errorResponse(res,HttpCodes.NOTACCEPTABLE,{ message:"Sorry, playing a move is not permitted. You must start a new game" });
     }
     if(gameOptionsAndMoves.playingMode === COMPUTER_VS_COMPUTER){
-        return errorResponse(res,HttpCodes.NOTACCEPTABLE,{ message:"You are not meant to provide any move; the game is played by computer vs. computer" });
+        return errorResponse(res,HttpCodes.NOTACCEPTABLE,{ message:"You are not permitted to make any moves; the game is played by computer vs computer" });
     }else{
         gameOptionsAndMoves.externalMove = req.body.playersMove;
         rockPaperScissor.apiPlayingProcess(res,gameOptionsAndMoves);
     }
-    // wrongRequest(res,"any move");
-    // gameOptionsAndMoves.externalMove = req.body.playersMove;
-    // rockPaperScissor.apiPlayingProcess(res,gameOptionsAndMoves);
+    
 }
 
 

@@ -110,7 +110,7 @@ describe("API Endpoint Testing", () => {
     describe("Test game play by computer vs computer", () => {
         jest.setTimeout(10000)
         it("Test three rounds, should return a 200", async () => {
-            const { statusCode, body } = await supertest(app).post("/process/game_options")
+            const { statusCode, body } = await supertest(app).post("/process/game_properties")
             .set("Content-Type", `application/json`)
             .set("Authorization", `Bearer ${accessToken}`)
             .send(playComputerVaComputerPayload);
@@ -122,7 +122,7 @@ describe("API Endpoint Testing", () => {
           
           it("Test one round, should return a 200", async () => {
             playComputerVaComputerPayload.gameRound = 1;
-            const { statusCode, body } = await supertest(app).post("/process/game_options")
+            const { statusCode, body } = await supertest(app).post("/process/game_properties")
             .set("Content-Type", `application/json`)
             .set("Authorization", `Bearer ${accessToken}`)
             .send(playComputerVaComputerPayload);
@@ -135,7 +135,7 @@ describe("API Endpoint Testing", () => {
           
           it("Test wrong round, should return a 422", async () => {
             playComputerVaComputerPayload.gameRound = 2;
-            const { statusCode, body } = await supertest(app).post("/process/game_options")
+            const { statusCode, body } = await supertest(app).post("/process/game_properties")
             .set("Content-Type", `application/json`)
             .set("Authorization", `Bearer ${accessToken}`)
             .send(playComputerVaComputerPayload);
@@ -149,7 +149,7 @@ describe("API Endpoint Testing", () => {
         jest.setTimeout(10000)
         it("Test one round, should return a 200", async () => {
         
-            const { statusCode, body } = await supertest(app).post("/process/game_options")
+            const { statusCode, body } = await supertest(app).post("/process/game_properties")
             .set("Content-Type", `application/json`)
             .set("Authorization", `Bearer ${accessToken}`)
             .send(playHumanVaComputerPayload);
@@ -171,7 +171,7 @@ describe("API Endpoint Testing", () => {
           });
           
           it("Test Wrong Move, should return 422", async () => {
-            const wrongRes = await supertest(app).post("/process/game_move")
+            const wrongRes = await supertest(app).post("/process/player_move")
                 .set("Content-Type", `application/json`)
                 .set("Authorization", `Bearer ${accessToken}`)
                 .send({playersMove:"bird"});
@@ -187,7 +187,7 @@ describe("API Endpoint Testing", () => {
           })
 
           it("Test a player Move, should return 200", async () => {
-            const moveRes = await supertest(app).post("/process/game_move")
+            const moveRes = await supertest(app).post("/process/player_move")
                 .set("Content-Type", `application/json`)
                 .set("Authorization", `Bearer ${accessToken}`)
                 .send({playersMove:"rock"});

@@ -12,7 +12,10 @@ const successResponse = (res,HTTP_SUCCESS,successMessage, data = null) =>{
         message:successMessage
       }
       if(!isEmpty(data))  result.data = data;
-      console.log(result);  
+      console.log(result);
+      if(res.writableEnded){
+          return;
+      }  
    return res.status(HTTP_SUCCESS).send(result);
 }
 
@@ -24,6 +27,9 @@ const errorResponse = (res,HTTP_ERROR,errorMessage) =>{
         message:errorMessage
       }
       console.log(result);
+      if(res.writableEnded){
+        return;
+      } 
    return res.status(HTTP_ERROR).send(result);    
 }
 
@@ -38,6 +44,9 @@ const payloadValidateErrorResponse = (res,next,error) =>{
         console.log(result);
       return res.status(422).json(result);
     }
+    if(res.writableEnded){
+        return;
+      } 
     next();
 }
 
