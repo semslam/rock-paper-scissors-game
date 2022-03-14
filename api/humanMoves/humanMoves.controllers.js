@@ -18,11 +18,9 @@ gameOptionsAndMoves.token = auth.getToken(req,res);
 gameOptionsAndMoves.gameRound = req.body.gameRound;
 gameOptionsAndMoves.playingMode = req.body.playersType;
 
-
-let response = {message:`You have chosen ${gameOptionsAndMoves.playingMode} as playerTypes, You are playing ${req.body.gameRound} round`};
     if(req.body.playersType === HUMAN_VS_COMPUTER){
         rockPaperScissor.gameStatus = false;
-        successResponse(res,HttpCodes.OK,"Please provide the player name",response);
+        successResponse(res,HttpCodes.OK,"Please provide the player name",{message:`You have chosen ${gameOptionsAndMoves.playingMode} as player type, You are playing ${req.body.gameRound} round`});
     }else{
         gameOptionsAndMoves.playerName = "Robot";
         rockPaperScissor.apiPlayingProcess(res,gameOptionsAndMoves);
@@ -38,9 +36,10 @@ const providePlayerName = (req, res)=>{
     if(gameOptionsAndMoves.playingMode === COMPUTER_VS_COMPUTER){
        return errorResponse(res,HttpCodes.NOTACCEPTABLE,{ message:"You are not permitted to provide a player name since the game is played by computer vs computer" });
     }else{
-        gameOptionsAndMoves.playerName = req.body.playerName
-        let response = {message:`Your game properties are  ${gameOptionsAndMoves.playingMode} as game type, ${gameOptionsAndMoves.gameRound} round(s) and ${req.body.playerName} as player name`,nextRequest:['Please choose your move',["rock", "paper", "scissors"]]};
-        successResponse(res,HttpCodes.OK,"Your player name is acceptable, next play a move",response);
+        gameOptionsAndMoves.playerName = req.body.playerName 
+        let response = {message:`Your game properties include ${gameOptionsAndMoves.playingMode} as the game type, ${gameOptionsAndMoves.gameRound} round(s) and ${req.body.playerName} as the player name`,
+        nextRequest:['Please choose a move from the list',["rock", "paper", "scissors"]]};
+        successResponse(res,HttpCodes.OK,"Your player name is acceptable. The next step is to play a move",response);
     }
 
 }
