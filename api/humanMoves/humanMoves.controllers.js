@@ -1,5 +1,6 @@
 // 'use strict';
-const RockPaperScissor = require("../../services/RockPaperScissor");
+// const RockPaperScissor = require("../../services/RockPaperScissor");
+const {playingProcess, getStatus} = require("../../services/ApiBootstrap")
 const {successResponse,errorResponse} = require("../../response/apiResponse");
 const {HttpCodes} = require("../../libraries/sustainedValues");
 const {isObjEmpty} = require("../../libraries/Validator");
@@ -7,7 +8,6 @@ const auth = require("../../middleware/jsonwebtokenAuthentication");
 const {repeatedValues} = require("../../libraries/sustainedValues")
 const [ROCK,PAPER,SCISSORS,COMPUTER,TIED,HUMAN_VS_COMPUTER,COMPUTER_VS_COMPUTER] = repeatedValues;
 
-const rockPaperScissor = new RockPaperScissor("api");
 
 let gameOptionsAndMoves = {};
 
@@ -19,11 +19,11 @@ gameOptionsAndMoves.gameRound = req.body.gameRound;
 gameOptionsAndMoves.playingMode = req.body.playersType;
 
     if(req.body.playersType === HUMAN_VS_COMPUTER){
-        rockPaperScissor.gameStatus = false;
+        getStatus();
         successResponse(res,HttpCodes.OK,"Please provide the player name",{message:`You have chosen ${gameOptionsAndMoves.playingMode} as player type, You are playing ${req.body.gameRound} round`});
     }else{
         gameOptionsAndMoves.playerName = "Robot";
-        rockPaperScissor.apiPlayingProcess(res,gameOptionsAndMoves);
+        playingProcess(res,gameOptionsAndMoves);
     } 
 
 }
@@ -53,7 +53,7 @@ const gameMove = (req, res)=>{
         return errorResponse(res,HttpCodes.NOTACCEPTABLE,{ message:"You are not permitted to make any moves; the game is played by computer vs computer" });
     }else{
         gameOptionsAndMoves.externalMove = req.body.playersMove;
-        rockPaperScissor.apiPlayingProcess(res,gameOptionsAndMoves);
+        playingProcess(res,gameOptionsAndMoves);
     }
     
 }
