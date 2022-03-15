@@ -3,6 +3,7 @@ const reportManager = require("../services/ReportManager");
 const gameSchema = require("../models/graphqlQueries/GameRecordsBuildSchema");
 const userSchema = require("../models/graphqlQueries/UsersBuildSchema");
 const {removeUndefineInObj} = require("../libraries/Validator");
+const auth = require("../middleware/jsonwebtokenAuthentication")
 
 const fetchGameReport= async (query)=>{
    return await  reportManager.fetchGameRecords(query);
@@ -34,13 +35,13 @@ const userRoot = {
 }
 
 
-router.use('/user_record', graphqlHTTP({
+router.use('/user_record',auth.authenticateToken, graphqlHTTP({
     schema: userSchema,
     rootValue:userRoot,
     graphiql: true,
 }));
 
-router.use('/game_result', graphqlHTTP({
+router.use('/game_result',auth.authenticateToken, graphqlHTTP({
     schema: gameSchema,
     rootValue:gameRoot,
     graphiql: true,
