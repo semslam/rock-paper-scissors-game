@@ -1,9 +1,12 @@
 #!/usr/bin/env node
 
-// import ConsoleMode from "./cli/ConsoleMode";
-
-// const consoleMode = new ConsoleMode()
-// consoleMode.welcome()
+const { isConsoleOrApi} = require("../libraries/sustainedValues");
 const RockPaperScissor = require("../services/RockPaperScissor");
-const consoleGame = new RockPaperScissor("console");
-consoleGame.consoleWelcome();
+const ConsoleMode = require("./ConsoleMode");
+const [CONSOLE,API] = isConsoleOrApi
+const rockPaperScissor = new RockPaperScissor(CONSOLE);
+//Starting point for CLI mode  
+rockPaperScissor.cliWelcome();
+
+
+

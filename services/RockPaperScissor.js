@@ -32,18 +32,26 @@ class RockPaperScissor{
   log = console.log;
   maxGameTie = 50;tieCount = 1;playerScore = 0;computerScore = 0;gameRound = 0;playerName = ""; token ="";
 
-  consoleWelcome = async (startNewGame = false)  =>{
+/**
+ * Console gma bootstrap
+ * @param {Boolean} startNewGame 
+ */
+  cliWelcome = async (startNewGame = false)  =>{
       if(!startNewGame){
         await this.consoleMode.welcome();
       }
     await this.consoleMode.startNewGame(startNewGame);
     let res = await this.consoleMode.chooseOneGameOption();
    this.gameRound = res.gameRound;
-   this.consolePredictMove(res.gameOption,res.playerName)
+   this.cliPayerMove(res.gameOption,res.playerName)
 
   }
-
-  consolePredictMove = async (gameOption,playerName)=>{
+  /**
+   * console player move
+   * @param {String} gameOption 
+   * @param {String} playerName 
+   */
+  cliPayerMove = async (gameOption,playerName)=>{
       
     let playerMove = "";
     let computerMove = this.gameComponents.computerMove();
@@ -57,47 +65,15 @@ class RockPaperScissor{
     this.predictMove(gameOption,playerName,playerMove,computerMove,null);
   }
 
-//   apiPlayingProcess(apiRes,properties){
+  /**
+   * Start a new game
+   */
+   playAgain = async () =>{
+    await sleep(500)
+    this.cliWelcome(true);
+  }
 
-//     const gameOption = properties.playingMode;
-//     let externalMove = properties.externalMove;
-//     const playerName = properties.playerName;
-//     this.token = properties.token;
-//     if(gameOption === COMPUTER_VS_COMPUTER){
-//         this.gameRound = properties.gameRound;
-//         for (let i = 0; i < this.gameRound; i++) {
-//             this.apiPredictMove(apiRes,gameOption,playerName,'')   
-//         }
-//     }else if(gameOption === HUMAN_VS_COMPUTER){
-//         this.gameRound = properties.gameRound;
-//         if(this.gameStatus){
-//            return errorResponse(apiRes,ErrorCodes.FORBIDDEN,"The has ended,You are have to start another game");
-//         }
-//         this.apiPredictMove(apiRes,gameOption,playerName,externalMove)
-//     }
-    
-//   }
 
-//   apiPredictMove = (apiRes,gameOption,playerName,externalMove)=>{
-    
-//     try {
-//         let playerMove = "";
-//     let computerMove = this.gameComponents.computerMove();
-//     if (gameOption === HUMAN_VS_COMPUTER) { 
-//         this.playerName = playerName;
-//         playerMove = externalMove; 
-//     }else if (gameOption === COMPUTER_VS_COMPUTER ) { 
-//         this.playerName = playerName; 
-//         playerMove = this.gameComponents.computerMove();
-//     }
-    
-//      this.predictMove(gameOption,playerName,playerMove,computerMove,apiRes);
-//     } catch (err) {
-//        console.log(err.message)
-//        throw new Error(err.message)
-//     }
-    
-//   }
 
   /**
    * Predict the moves of the two players.
@@ -154,7 +130,7 @@ class RockPaperScissor{
     this.tieCount++;
     if(this.gameMode === CONSOLE){
       await resultManagement.temporaryTied(properties)
-      this.consolePredictMove(properties.gameOption, properties.playerName);
+      this.cliPayerMove(properties.gameOption, properties.playerName);
     }else{
       await resultManagement.temporaryTied(properties,apiRes)  
     }
@@ -168,7 +144,7 @@ class RockPaperScissor{
     this.gameRound--, this.tieCount = 1; // set tieCount back to 1
     if(this.gameMode === CONSOLE){
       await resultManagement.currentScore(properties)
-      this.consolePredictMove(properties.gameOption,properties.playerName);
+      this.cliPayerMove(properties.gameOption,properties.playerName);
     }else{
       await resultManagement.currentScore(properties,apiRes);
     }
@@ -236,14 +212,6 @@ class RockPaperScissor{
     
   };
 
-
-  /**
-   * play again
-   */
-  playAgain = async () =>{
-    await sleep(500)
-    this.consoleWelcome(true);
-  }
 
 }
 
