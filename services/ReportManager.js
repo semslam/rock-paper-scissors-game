@@ -7,11 +7,9 @@ const fetchGameRecords = async (query)=>{
 }
 
 const fetchUserRecords = async (query)=>{
-    // console.log(query)
     return await userRepo.find(query);
 }
 const fetchSingleUserRecord = async (query)=>{
-    // console.log(query)
     return await userRepo.findOne(query);
 }
 

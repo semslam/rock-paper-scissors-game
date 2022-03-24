@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "nodemon server",
     "start": "node cli/index.js",
+    "build": "node build",
     "test": "jest --watchAll --detectOpenHandles"
   },
   "repository": {

@@ -13,7 +13,7 @@ const userOnboardProcess = async (req,res)=>{
     user = await create(user);
     successResponse(res,HttpCodes.CREATED,"Account was successful created",{username:user.username,gender:user.gender});
     } catch (err) {
-       return errorResponse(res,ErrorCodes.INTERNAL_ERROR,err);
+       return errorResponse(res,ErrorCodes.INTERNAL_ERROR,err.message);
     }
     
 }
@@ -21,7 +21,6 @@ const userOnboardProcess = async (req,res)=>{
 
 const loginProcess = async (req,res)=>{
     try {
-        // console.log(req);
         const  user = await findOne({username:req.username});
          const passer = await isPasswordMatch(req.password,user.password);
          if(!passer){
@@ -32,7 +31,7 @@ const loginProcess = async (req,res)=>{
 
        successResponse(res,HttpCodes.OK,"The login was successful!",{ accessToken: accessToken});
     } catch (err) {
-        return errorResponse(res,ErrorCodes.INTERNAL_ERROR,err);
+        return errorResponse(res,ErrorCodes.INTERNAL_ERROR,err.message);
     }
     
     

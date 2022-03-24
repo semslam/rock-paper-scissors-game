@@ -4,6 +4,10 @@ const STATUS_FAILED = "Failed";
 const STATUS_SUCCESS = "Successful";
 const timestamp = convertDateToTimeStamp(new Date());
 
+const writableEnded = (res)=>{
+  if(res.writableEnded)return;
+}
+
 const successResponse = (res,HTTP_SUCCESS,successMessage, data = null) =>{
     let result = {
         code:HTTP_SUCCESS,
@@ -13,9 +17,8 @@ const successResponse = (res,HTTP_SUCCESS,successMessage, data = null) =>{
       }
       if(!isEmpty(data))  result.data = data;
       console.log(result);
-      if(res.writableEnded){
-          return;
-      }  
+      writableEnded(res);
+
    return res.status(HTTP_SUCCESS).send(result);
 }
 
@@ -27,9 +30,8 @@ const errorResponse = (res,HTTP_ERROR,errorMessage) =>{
         message:errorMessage
       }
       console.log(result);
-      if(res.writableEnded){
-        return;
-      } 
+      writableEnded(res);
+
    return res.status(HTTP_ERROR).send(result);    
 }
 
@@ -44,9 +46,8 @@ const payloadValidateErrorResponse = (res,next,error) =>{
         console.log(result);
       return res.status(422).json(result);
     }
-    if(res.writableEnded){
-        return;
-      } 
+    writableEnded(res);
+    
     next();
 }
 

@@ -39,7 +39,6 @@ class GameComponents {
             winner = computerMove === ROCK ? COMPUTER : playerName;
             break;
         default:
-            console.log(`Wrong parameter pass in analyticalEngine`);
             throw new Error(`Wrong parameter pass in analyticalEngine`);
         }
 
@@ -62,7 +61,6 @@ class GameComponents {
         case SCISSORS:
             return "✌️";
         default:
-            console.log("Wrong parameter pass in chooseEmojiMove");
             throw new Error(`Wrong parameter pass in chooseEmojiMove`);
         }
     };

@@ -20,24 +20,26 @@ const getStatus = ()=>{
  * @returns 
  */
 const  playingProcess = (res,properties)=>{
-
-    const gameOption = properties.playingMode;
-    let externalMove = properties.externalMove;
-    const playerName = properties.playerName;
-    rps.token = properties.token;
-    if(gameOption === COMPUTER_VS_COMPUTER){
-        rps.gameRound = properties.gameRound;
-        for (let i = 0; i < rps.gameRound; i++) {
-            playerMove(res,gameOption,playerName,'')   
-        }
-    }else if(gameOption === HUMAN_VS_COMPUTER){
-        rps.gameRound = properties.gameRound;
-        if(rps.gameStatus){
-           return errorResponse(res,ErrorCodes.FORBIDDEN,"The has ended,You are have to start another game");
-        }
-        playerMove(res,gameOption,playerName,externalMove)
+    try {
+        const gameOption = properties.playingMode;
+        let externalMove = properties.externalMove;
+        const playerName = properties.playerName;
+        rps.token = properties.token;
+        if(gameOption === COMPUTER_VS_COMPUTER){
+            rps.gameRound = properties.gameRound;
+            for (let i = 0; i < rps.gameRound; i++) {
+                playerMove(res,gameOption,playerName,'')   
+            }
+        }else if(gameOption === HUMAN_VS_COMPUTER){
+            rps.gameRound = properties.gameRound;
+            if(rps.gameStatus){
+            return errorResponse(res,ErrorCodes.FORBIDDEN,"The has ended,You are have to start another game");
+            }
+            playerMove(res,gameOption,playerName,externalMove)
+        } 
+    } catch (err) {
+        return errorResponse(res,ErrorCodes.INTERNAL_ERROR,err.message);
     }
-    
   }
   /**
    * Generate player and computer move

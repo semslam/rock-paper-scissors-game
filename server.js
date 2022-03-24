@@ -24,7 +24,7 @@ app.use(express.json());  /* bodyParser.json() is deprecated */
 app.use(express.urlencoded({ extended: true }));   /* bodyParser.urlencoded() is deprecated */
 // simple route
 app.get("/", (req, res) => {
-  successResponse(res,HttpCodes.OK,{ message: "Welcome to Welcome to rock paper scissors game" });
+  successResponse(res,HttpCodes.OK,{ message: "Welcome to rock paper scissors game" });
 });
 
 require("./api/routes")(app)

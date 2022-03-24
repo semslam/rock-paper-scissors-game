@@ -89,7 +89,6 @@ let spinSleepAndPrint = async (type,text)=>{
             spinner.success({text: text,});
             break;        
         default:
-            console.log('Wrong parameter pass in spinSleepAndPrint')
             throw new Error('Wrong parameter pass in spinSleepAndPrint');
     }
     

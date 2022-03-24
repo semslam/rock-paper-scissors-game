@@ -42,7 +42,7 @@ const isNull = (value)=>{
 };
 
 /**
- * It will return the type back to you
+ * It will return the type 
  * @param {*} value
  * @return {string}
  */
