@@ -16,7 +16,7 @@ $ nodemon
 ```
 4. Run this for the test case:
 ```
-$ npm test -- GameProcessApiEndpoint.test.js
+$ npm test -- GameApiEndpoint.test.js
 $ npm test -- GameComponents.test.js
 $ npm test -- Validator.test.js
 ```

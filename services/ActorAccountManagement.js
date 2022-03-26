@@ -24,7 +24,7 @@ const loginProcess = async (req,res)=>{
         const  user = await findOne({username:req.username});
          const passer = await isPasswordMatch(req.password,user.password);
          if(!passer){
-             return errorResponse(res,ErrorCodes.FORBIDDEN,"Password not match")
+             return errorResponse(res,ErrorCodes.MISSING_PARAMETER,"Wrong user login details")
          }
          
        const accessToken = generateAccessToken({id:user._id,username:user.username});

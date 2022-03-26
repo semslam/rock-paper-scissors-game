@@ -8,7 +8,7 @@ const onBoardValidation = data =>{
     const schema = Joi.object({
         username: Joi.string().email().required(),
         password:Joi.string().min(7).max(30).required(),
-        gender:Joi.string().valid(MALE,FEMALE)
+        gender:Joi.string().valid(MALE,FEMALE).required()
       });
       return schema.validate(data);
 }
