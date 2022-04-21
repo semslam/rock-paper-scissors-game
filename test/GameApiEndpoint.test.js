@@ -84,7 +84,7 @@ describe("API Endpoint Testing", () => {
           expect(statusMessage).toEqual("Failed")
           expect(message).toEqual('"username" must be a valid email');
           expect(code).toBe(422);
-            
+        
           });
 
           it("Onboard with non-valid password,should return a 422", async () => {
